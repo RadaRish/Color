@@ -2289,6 +2289,8 @@ export default class ViewerManager {
   createIframeOverlay(hotspot, markerEl) {
     // Помечаем тип маркера
     markerEl.setAttribute('data-marker-type', 'iframe-3d');
+    // Для унификации логики перетаскивания/границ считаем как видео-область
+    markerEl._isVideoArea = true;
 
     // Параметры размера (динамические через hotspot)
     let width = parseFloat(hotspot.videoWidth) || 4;
@@ -2301,10 +2303,15 @@ export default class ViewerManager {
     plane.className = 'interactive';
     plane.setAttribute('material', 'color: #111; opacity: 0.6; side: double; shader: flat');
     plane.setAttribute('billboard', '');
+    plane.setAttribute('data-video-plane', 'true');
     plane.setAttribute('hotspot-handler', `hotspotId: ${hotspot.id}; hotspotType: iframe-3d`);
 
     markerEl.appendChild(plane);
     this.aframeScene.appendChild(markerEl);
+
+    // Маркер как интерактивный/перетаскиваемый элемент, поворачивается к камере
+    markerEl.classList.add('interactive', 'draggable');
+    markerEl.setAttribute('face-camera', '');
 
     // Создаем DOM iframe поверх canvas
     // Контейнер для позиционирования
@@ -2333,6 +2340,147 @@ export default class ViewerManager {
     markerEl._iframeOverlay = overlay;
     markerEl._iframePlane = plane;
     markerEl._iframeHotspot = hotspot;
+
+    // Добавляем минимальные DOM-контролы: рукоятка перетаскивания и углы ресайза
+    // Они маленькие и не мешают кликам по самому видео внутри iframe
+    const controlsLayer = document.createElement('div');
+    controlsLayer.style.cssText = `
+      position: absolute; inset: 0; pointer-events: none; z-index: 2;
+    `;
+
+    // Рукоятка для перетаскивания (в левом верхнем углу)
+    const dragHandle = document.createElement('div');
+    dragHandle.title = 'Переместить (зажмите и тяните)';
+    dragHandle.style.cssText = `
+      position: absolute; left: 6px; top: 6px; width: 16px; height: 16px;
+      border-radius: 50%; background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.7);
+      cursor: move; pointer-events: auto;
+    `;
+    controlsLayer.appendChild(dragHandle);
+
+    // Общая фабрика для углов ресайза
+    const makeCornerHandle = (cursor) => {
+      const h = document.createElement('div');
+      h.style.cssText = `
+        position: absolute; width: 14px; height: 14px; pointer-events: auto;
+        background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.7);
+      `;
+      h.style.cursor = cursor;
+      return h;
+    };
+
+    const handleTL = makeCornerHandle('nwse-resize');
+    const handleTR = makeCornerHandle('nesw-resize');
+    const handleBL = makeCornerHandle('nesw-resize');
+    const handleBR = makeCornerHandle('nwse-resize');
+    handleTL.style.left = '-7px'; handleTL.style.top = '-7px';
+    handleTR.style.right = '-7px'; handleTR.style.top = '-7px';
+    handleBL.style.left = '-7px'; handleBL.style.bottom = '-7px';
+    handleBR.style.right = '-7px'; handleBR.style.bottom = '-7px';
+    controlsLayer.appendChild(handleTL);
+    controlsLayer.appendChild(handleTR);
+    controlsLayer.appendChild(handleBL);
+    controlsLayer.appendChild(handleBR);
+
+    overlay.appendChild(controlsLayer);
+
+    // Помощники для пересчета пикселей оверлея в 3D-единицы плоскости
+    const pxToUnits = () => {
+      const rect = overlay.getBoundingClientRect();
+      const currentWUnits = parseFloat(hotspot.videoWidth) || width;
+      const currentHUnits = parseFloat(hotspot.videoHeight) || height;
+      const sx = rect.width > 0 ? currentWUnits / rect.width : 0; // единиц/px
+      const sy = rect.height > 0 ? currentHUnits / rect.height : 0;
+      return { sx, sy };
+    };
+
+    // Ресайз логика для углов
+    const startDomResize = (corner, downEvent) => {
+      downEvent.preventDefault();
+      downEvent.stopPropagation();
+
+      const startX = downEvent.clientX;
+      const startY = downEvent.clientY;
+      const startW = parseFloat(hotspot.videoWidth) || width;
+      const startH = parseFloat(hotspot.videoHeight) || height;
+
+      const onMove = (moveEvent) => {
+        const dx = moveEvent.clientX - startX;
+        const dy = moveEvent.clientY - startY;
+        const { sx, sy } = pxToUnits();
+        let newW = startW;
+        let newH = startH;
+
+        // Для A-Frame ось Y направлена вверх, поэтому высоту изменяем с инверсией dy
+        if (corner === 'top-right') {
+          newW = startW + dx * sx;
+          newH = startH - dy * sy;
+        } else if (corner === 'top-left') {
+          newW = startW - dx * sx;
+          newH = startH - dy * sy;
+        } else if (corner === 'bottom-right') {
+          newW = startW + dx * sx;
+          newH = startH + dy * sy;
+        } else if (corner === 'bottom-left') {
+          newW = startW - dx * sx;
+          newH = startH + dy * sy;
+        }
+
+        // Ограничения размеров
+        newW = Math.max(1.0, Math.min(newW, 20));
+        newH = Math.max(0.5, Math.min(newH, 20));
+
+        // Обновляем размеры плоскости и hotspot через уже существующий помощник
+        try {
+          this.updateVideoAreaSize(markerEl, plane, hotspot, newW, newH);
+        } catch (e) {
+          // Фолбек: напрямую
+          plane.setAttribute('width', newW);
+          plane.setAttribute('height', newH);
+          hotspot.videoWidth = newW;
+          hotspot.videoHeight = newH;
+        }
+      };
+
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        // Сохранение итоговых размеров
+        if (this.hotspotManager) {
+          this.hotspotManager.updateHotspot(hotspot.id, {
+            videoWidth: hotspot.videoWidth,
+            videoHeight: hotspot.videoHeight
+          });
+        }
+      };
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    };
+
+    handleTL.addEventListener('mousedown', (e) => startDomResize('top-left', e));
+    handleTR.addEventListener('mousedown', (e) => startDomResize('top-right', e));
+    handleBL.addEventListener('mousedown', (e) => startDomResize('bottom-left', e));
+    handleBR.addEventListener('mousedown', (e) => startDomResize('bottom-right', e));
+
+    // Перетаскивание маркера через рукоятку с использованием CoordinateManager
+    dragHandle.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.coordinateManager && typeof this.coordinateManager.startDrag === 'function') {
+        // Создаём «совместимое» событие: важны только clientX/clientY/target
+        const synthetic = {
+          clientX: e.clientX,
+          clientY: e.clientY,
+          // Используем плоскость как target, чтобы проверки области прошли
+          target: plane,
+          // Для совместимости с вызываемым кодом
+          preventDefault: () => { },
+          stopPropagation: () => { }
+        };
+        this.coordinateManager.startDrag(synthetic, markerEl, hotspot.id);
+      }
+    });
 
     // Обновление позиции iframe каждый кадр рендера (через requestAnimationFrame)
     const updateOverlayPosition = () => {
@@ -2404,6 +2552,16 @@ export default class ViewerManager {
     };
     window.addEventListener('resize', onResize);
     markerEl._iframeOnResize = onResize;
+
+    // Настраиваем перетаскивание через CoordinateManager (обновляет позицию хотспота)
+    if (this.coordinateManager) {
+      this.coordinateManager.setupMarkerDragging(markerEl, hotspot.id, (newPosition) => {
+        if (this.hotspotManager) {
+          this.hotspotManager.updateHotspotPosition(hotspot.id, newPosition);
+        }
+        markerEl._wasDragged = true;
+      });
+    }
 
     return markerEl;
   }
