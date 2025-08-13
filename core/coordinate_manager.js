@@ -217,13 +217,19 @@ export default class CoordinateManager {
 
     // Добавляем визуальную обратную связь при наведении
     markerElement.addEventListener('mouseenter', () => {
-      if (!this.isDragging) {
+      // Не увеличиваем видео-область и iframe-оверлей при наведении — мешает захвату resize-хэндлов
+      const hotspotType = this.viewerManager?.getHotspotData(hotspotId)?.type;
+      const isVideoArea = markerElement._isVideoArea || hotspotType === 'video-area' || markerElement.getAttribute('data-marker-type') === 'iframe-3d';
+      if (!this.isDragging && !isVideoArea) {
         markerElement.setAttribute('scale', '1.1 1.1 1.1');
       }
     });
 
     markerElement.addEventListener('mouseleave', () => {
-      if (!this.isDragging) {
+      // Возвращаем масштаб только для не-видео маркеров
+      const hotspotType = this.viewerManager?.getHotspotData(hotspotId)?.type;
+      const isVideoArea = markerElement._isVideoArea || hotspotType === 'video-area' || markerElement.getAttribute('data-marker-type') === 'iframe-3d';
+      if (!this.isDragging && !isVideoArea) {
         markerElement.setAttribute('scale', '1 1 1');
       }
     });
