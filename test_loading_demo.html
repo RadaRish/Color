@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Демо нового индикатора загрузки</title>
+    <style>
+        body {
+            background: #0f0f0f;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .demo-button {
+            background: linear-gradient(135deg, #646cff, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: transform 0.2s ease;
+        }
+        
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(100, 108, 255, 0.4);
+        }
+        
+        .info-section {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid #646cff;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            background: rgba(100, 108, 255, 0.1);
+            margin: 8px 0;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 3px solid #646cff;
+        }
+        
+        .color-preview {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 0 5px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>🎨 Новый индикатор загрузки "Бесконечность"</h1>
+        
+        <div class="info-section">
+            <h2>✨ Особенности нового индикатора:</h2>
+            <ul class="feature-list">
+                <li>🔄 Анимированный символ бесконечности вместо линейного прогресса</li>
+                <li>🌈 Плавные переливы цветов: 
+                    <span class="color-preview" style="background: #646cff;"></span>
+                    <span class="color-preview" style="background: #8b5cf6;"></span>
+                    <span class="color-preview" style="background: #ec4899;"></span>
+                    <span class="color-preview" style="background: #f59e0b;"></span>
+                    <span class="color-preview" style="background: #10b981;"></span>
+                </li>
+                <li>⚡ Двойная анимация с противоположными направлениями вращения</li>
+                <li>💫 Плавное свечение и тени для глубины</li>
+                <li>🎯 Адаптивный дизайн с современным стилем</li>
+            </ul>
+        </div>
+        
+        <div class="info-section">
+            <h2>🚀 Где используется:</h2>
+            <ul class="feature-list">
+                <li>📸 Загрузка панорамных изображений</li>
+                <li>🏗️ Создание и обработка сцен</li>
+                <li>💾 Экспорт панорамных туров</li>
+                <li>⚙️ Любые длительные операции в приложении</li>
+            </ul>
+        </div>
+        
+        <h2>🎮 Интерактивная демонстрация:</h2>
+        <p>Кликните по кнопкам ниже, чтобы увидеть индикатор в действии</p>
+        
+        <button class="demo-button" onclick="simulateImageUpload()">📸 Симуляция загрузки панорам</button>
+        <button class="demo-button" onclick="simulateExport()">📦 Симуляция экспорта тура</button>
+        <button class="demo-button" onclick="simulateProcessing()">⚡ Симуляция обработки</button>
+        
+        <div class="info-section">
+            <h2>💡 Техническая информация:</h2>
+            <ul class="feature-list">
+                <li>🎨 CSS-анимации с keyframes для плавности</li>
+                <li>🔧 Модульная архитектура - легко изменять</li>
+                <li>⚡ Производительность: только CSS, без JavaScript анимаций</li>
+                <li>📱 Отзывчивый дизайн для всех устройств</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Симуляция различных процессов загрузки
+        function simulateImageUpload() {
+            const viewer = window.viewerManager;
+            if (viewer) {
+                viewer.showGlobalLoading('Загрузка панорамных изображений...');
+                setTimeout(() => {
+                    viewer.showGlobalLoading('Обработка изображений...');
+                    setTimeout(() => {
+                        viewer.showGlobalLoading('Создание сцен...');
+                        setTimeout(() => {
+                            viewer.hideGlobalLoading();
+                            alert('✅ Загрузка завершена!');
+                        }, 1500);
+                    }, 2000);
+                }, 2000);
+            } else {
+                alert('❌ ViewerManager не найден. Откройте главное приложение.');
+            }
+        }
+
+        function simulateExport() {
+            const viewer = window.viewerManager;
+            if (viewer) {
+                viewer.showGlobalLoading('Подготовка к экспорту...');
+                setTimeout(() => {
+                    viewer.showGlobalLoading('Сбор данных проекта...');
+                    setTimeout(() => {
+                        viewer.showGlobalLoading('Создание архива...');
+                        setTimeout(() => {
+                            viewer.showGlobalLoading('Финализация экспорта...');
+                            setTimeout(() => {
+                                viewer.hideGlobalLoading();
+                                alert('✅ Экспорт завершен!');
+                            }, 1000);
+                        }, 1500);
+                    }, 2000);
+                }, 1500);
+            } else {
+                alert('❌ ViewerManager не найден. Откройте главное приложение.');
+            }
+        }
+
+        function simulateProcessing() {
+            const viewer = window.viewerManager;
+            if (viewer) {
+                viewer.showGlobalLoading('Инициализация процесса...');
+                setTimeout(() => {
+                    viewer.showGlobalLoading('Анализ данных...');
+                    setTimeout(() => {
+                        viewer.showGlobalLoading('Применение эффектов...');
+                        setTimeout(() => {
+                            viewer.hideGlobalLoading();
+                            alert('✅ Обработка завершена!');
+                        }, 1500);
+                    }, 2000);
+                }, 1000);
+            } else {
+                alert('❌ ViewerManager не найден. Откройте главное приложение.');
+            }
+        }
+    </script>
+</body>
+</html>
