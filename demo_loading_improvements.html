@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Демонстрация улучшенной загрузки</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: "Roboto", Arial, sans-serif;
+        background: #1a1a1a;
+        color: white;
+      }
+
+      .demo-container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin: 30px 0;
+      }
+
+      .demo-section {
+        background: #2a2a2a;
+        border-radius: 12px;
+        padding: 20px;
+        border: 2px solid #333;
+      }
+
+      .demo-section h3 {
+        color: #646cff;
+        margin-top: 0;
+        text-align: center;
+      }
+
+      .old-behavior {
+        border-color: #ff6b6b;
+      }
+
+      .old-behavior h3 {
+        color: #ff6b6b;
+      }
+
+      .new-behavior {
+        border-color: #4caf50;
+      }
+
+      .new-behavior h3 {
+        color: #4caf50;
+      }
+
+      .demo-button {
+        background: #646cff;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        width: 100%;
+        margin: 10px 0;
+        transition: all 0.3s ease;
+      }
+
+      .demo-button:hover {
+        background: #535bf2;
+        transform: translateY(-2px);
+      }
+
+      .demo-button.old {
+        background: #ff6b6b;
+      }
+
+      .demo-button.old:hover {
+        background: #ff5252;
+      }
+
+      .demo-button.new {
+        background: #4caf50;
+      }
+
+      .demo-button.new:hover {
+        background: #45a049;
+      }
+
+      .mock-drop-zone {
+        border: 2px dashed #646cff;
+        border-radius: 12px;
+        padding: 40px;
+        text-align: center;
+        background: rgba(26, 26, 26, 0.9);
+        color: rgba(255, 255, 255, 0.87);
+        transition: all 0.3s ease;
+        min-height: 150px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 15px 0;
+        position: relative;
+      }
+
+      .mock-drop-zone.drag-over {
+        border-color: #00ff88;
+        background: rgba(0, 255, 136, 0.1);
+        transform: scale(1.02);
+      }
+
+      .mock-drop-zone.old-delay {
+        transition: opacity 0.4s ease;
+      }
+
+      .mock-drop-zone.new-fast {
+        transition: opacity 0.1s ease;
+      }
+
+      .mock-drop-zone.hiding {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .mock-progress {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: transparent;
+        border-radius: 12px;
+        padding: 30px 40px;
+        z-index: 10001;
+        display: none;
+        flex-direction: column;
+        gap: 20px;
+        min-width: 320px;
+        align-items: center;
+      }
+
+      .infinity-loader {
+        width: 60px;
+        height: 30px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .infinity-symbol {
+        width: 60px;
+        height: 30px;
+        position: relative;
+        transform: rotate(-45deg);
+      }
+
+      .infinity-symbol::before,
+      .infinity-symbol::after {
+        content: "";
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        border-top-color: #646cff;
+        border-right-color: #8b5cf6;
+        border-bottom-color: #ec4899;
+        border-left-color: #f59e0b;
+        animation:
+          infinityRotate 1.5s linear infinite,
+          infinityColors 3s ease-in-out infinite;
+      }
+
+      .infinity-symbol::before {
+        top: 0;
+        left: 0;
+      }
+
+      .infinity-symbol::after {
+        top: 0;
+        right: 0;
+        animation-delay: 0.75s;
+        animation-direction: reverse;
+      }
+
+      @keyframes infinityRotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes infinityColors {
+        0%,
+        100% {
+          border-top-color: #646cff;
+          border-right-color: #8b5cf6;
+          border-bottom-color: #ec4899;
+          border-left-color: #f59e0b;
+          box-shadow: 0 0 10px rgba(100, 108, 255, 0.6);
+        }
+        50% {
+          border-top-color: #ec4899;
+          border-right-color: #f59e0b;
+          border-bottom-color: #10b981;
+          border-left-color: #646cff;
+          box-shadow: 0 0 10px rgba(236, 72, 153, 0.6);
+        }
+      }
+
+      .progress-label {
+        color: rgba(255, 255, 255, 0.87);
+        font-size: 14px;
+        text-align: center;
+        font-weight: 500;
+      }
+
+      .improvement-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .improvement-list li {
+        background: rgba(100, 108, 255, 0.1);
+        margin: 8px 0;
+        padding: 10px 15px;
+        border-radius: 6px;
+        border-left: 3px solid #646cff;
+      }
+
+      .improvement-list li::before {
+        content: "✅ ";
+        color: #4caf50;
+        font-weight: bold;
+      }
+
+      .info-box {
+        background: rgba(26, 26, 26, 0.8);
+        border: 1px solid #333;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .status-text {
+        font-size: 12px;
+        color: #888;
+        text-align: center;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-container">
+      <h1>🎨 Демонстрация улучшенной загрузки</h1>
+
+      <div class="info-box">
+        <h3>📋 Что было исправлено:</h3>
+        <ul class="improvement-list">
+          <li>Окно загрузки исчезает мгновенно при начале процесса</li>
+          <li>Индикатор прогресса показывается сразу с детализацией</li>
+          <li>Поддержка drag & drop с визуальной обратной связью</li>
+          <li>Ускоренная анимация скрытия (0.1s вместо 0.4s)</li>
+          <li>Отдельная обработка для загрузки проектов и панорам</li>
+        </ul>
+      </div>
+
+      <div class="comparison">
+        <div class="demo-section old-behavior">
+          <h3>❌ Было: Плохой UX</h3>
+          <div class="mock-drop-zone old-delay" id="oldDropZone">
+            <div>📁 Добавьте панорамы</div>
+            <div class="status-text">Медленное скрытие (0.4s задержка)</div>
+          </div>
+          <button class="demo-button old" onclick="simulateOldBehavior()">
+            Старое поведение
+          </button>
+          <div class="status-text">
+            Окно исчезает с задержкой,<br />
+            индикатор появляется поздно
+          </div>
+        </div>
+
+        <div class="demo-section new-behavior">
+          <h3>✅ Стало: Отличный UX</h3>
+          <div class="mock-drop-zone new-fast" id="newDropZone">
+            <div>📁 Добавьте панорамы</div>
+            <div class="status-text">Мгновенное скрытие (0.1s)</div>
+          </div>
+          <button class="demo-button new" onclick="simulateNewBehavior()">
+            Новое поведение
+          </button>
+          <div class="status-text">
+            Мгновенное скрытие окна,<br />
+            сразу показывается прогресс
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <p>
+          <strong>Результат:</strong> Значительно улучшено визуальное восприятие
+          процесса загрузки. Пользователь получает мгновенную обратную связь о
+          том, что его действие обработано, и видит детальный прогресс загрузки.
+        </p>
+      </div>
+
+      <div class="demo-section">
+        <h3>🚀 Тестирование в основном приложении</h3>
+        <button
+          class="demo-button"
+          onclick="window.open('index.html', '_blank')"
+        >
+          Открыть панорамный редактор
+        </button>
+        <div class="status-text">
+          Загрузите несколько панорамных изображений для проверки исправлений
+        </div>
+      </div>
+    </div>
+
+    <!-- Имитация индикатора прогресса -->
+    <div class="mock-progress" id="mockProgress">
+      <div class="infinity-loader">
+        <div class="infinity-symbol"></div>
+      </div>
+      <span class="progress-label" id="progressLabel">Загрузка...</span>
+    </div>
+
+    <script>
+      function simulateOldBehavior() {
+        const dropZone = document.getElementById("oldDropZone");
+        const progress = document.getElementById("mockProgress");
+        const label = document.getElementById("progressLabel");
+
+        // Имитация старого поведения - долгое скрытие, поздний прогресс
+        setTimeout(() => {
+          dropZone.classList.add("hiding");
+
+          setTimeout(() => {
+            dropZone.style.display = "none";
+            label.textContent = "Загрузка панорам... (с задержкой)";
+            progress.style.display = "flex";
+
+            setTimeout(() => {
+              progress.style.display = "none";
+              dropZone.style.display = "flex";
+              dropZone.classList.remove("hiding");
+              alert(
+                "Старое поведение: заметна задержка между действием и реакцией"
+              );
+            }, 2000);
+          }, 400); // 0.4s задержка как было раньше
+        }, 100);
+      }
+
+      function simulateNewBehavior() {
+        const dropZone = document.getElementById("newDropZone");
+        const progress = document.getElementById("mockProgress");
+        const label = document.getElementById("progressLabel");
+
+        // Имитация нового поведения - мгновенное скрытие, сразу прогресс
+        dropZone.classList.add("hiding");
+        label.textContent = "Загрузка 3 панорам...";
+        progress.style.display = "flex";
+
+        setTimeout(() => {
+          dropZone.style.display = "none";
+        }, 100); // 0.1s быстрое скрытие
+
+        // Имитация прогресса загрузки
+        const steps = [
+          "Обработка панорамы 1/3: landscape.jpg",
+          "Обработка панорамы 2/3: interior.jpg",
+          "Обработка панорамы 3/3: exterior.jpg",
+          "Завершение загрузки...",
+        ];
+
+        let stepIndex = 0;
+        const interval = setInterval(() => {
+          if (stepIndex < steps.length) {
+            label.textContent = steps[stepIndex];
+            stepIndex++;
+          } else {
+            clearInterval(interval);
+            progress.style.display = "none";
+            dropZone.style.display = "flex";
+            dropZone.classList.remove("hiding");
+            alert("Новое поведение: мгновенная реакция и детальный прогресс!");
+          }
+        }, 800);
+      }
+
+      // Drag & Drop демонстрация
+      ["oldDropZone", "newDropZone"].forEach((id) => {
+        const zone = document.getElementById(id);
+
+        ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+          zone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          });
+        });
+
+        ["dragenter", "dragover"].forEach((eventName) => {
+          zone.addEventListener(eventName, () => {
+            zone.classList.add("drag-over");
+          });
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+          zone.addEventListener(eventName, () => {
+            zone.classList.remove("drag-over");
+          });
+        });
+
+        zone.addEventListener("drop", (e) => {
+          if (id === "oldDropZone") {
+            simulateOldBehavior();
+          } else {
+            simulateNewBehavior();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

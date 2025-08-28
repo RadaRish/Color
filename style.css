@@ -1,0 +1,1303 @@
+/* Поддержка кириллицы и базовые стили */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&subset=cyrillic&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    "Roboto",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background: #1a1a1a;
+  color: #e6e6e6;
+  font-feature-settings: "kern";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Убираем светло-голубой фон A-Frame */
+a-scene {
+  background: transparent !important;
+}
+
+.a-canvas {
+  background: transparent !important;
+}
+
+#viewer-container canvas {
+  background: transparent !important;
+}
+
+/* Дополнительные правила для полного удаления A-Frame маски */
+a-scene canvas {
+  background: transparent !important;
+}
+
+.a-enter-vr {
+  background: transparent !important;
+}
+
+/* Убираем любые overlay и маски A-Frame */
+.a-loader-title,
+.a-loader,
+.a-enter-vr-button,
+.a-enter-ar-button {
+  display: none !important;
+}
+
+/* Убираем синий фон со всех возможных элементов A-Frame */
+.a-canvas,
+#aframe-canvas,
+canvas[data-aframe-canvas="true"] {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Убираем Three.js renderer фон */
+canvas {
+  background: none !important;
+  background-color: transparent !important;
+}
+
+/* Полное удаление всех A-Frame фонов и масок */
+#viewer-container * {
+  background: transparent !important;
+}
+
+#viewer-container a-scene {
+  background: none !important;
+}
+
+/* 2D тултип для названий/описаний маркеров (редактор) */
+.tour-tooltip {
+  position: fixed;
+  padding: 6px 10px;
+  background: rgba(26, 26, 26, 0.95);
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 10002;
+}
+
+/* Улучшения: заголовок/описание в тултипе редактора */
+.tour-tooltip .title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.tour-tooltip .tour-tip-sep {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  margin: 4px 0;
+}
+.tour-tooltip .desc {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 8px;
+  border-radius: 4px;
+  color: #eee;
+  line-height: 1.35;
+}
+
+/* Убираем скрытые системные фоны */
+.a-entity,
+a-sky:not([src]) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Информационный диалог */
+.info-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10001;
+}
+
+.info-dialog-content {
+  background: rgba(40, 40, 40, 0.95);
+  border: 1px solid #555;
+  border-radius: 12px;
+  padding: 24px;
+  min-width: 300px;
+  max-width: 500px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.info-dialog-content h3 {
+  margin: 0 0 16px 0;
+  color: #fff;
+  font-size: 20px;
+}
+
+.info-dialog-content p {
+  margin: 0 0 20px 0;
+  color: #ccc;
+  line-height: 1.5;
+}
+
+.info-dialog-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.info-dialog-buttons button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.info-dialog-buttons button:not(.delete-btn) {
+  background: #0078d4;
+  color: white;
+}
+
+.info-dialog-buttons button:not(.delete-btn):hover {
+  background: #106ebe;
+}
+
+.info-dialog-buttons .delete-btn {
+  background: #d13438;
+  color: white;
+}
+
+.info-dialog-buttons .delete-btn:hover {
+  background: #a4262c;
+}
+
+/* Контекстное меню */
+.custom-context-menu {
+  position: fixed;
+  background: rgba(40, 40, 40, 0.95);
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 8px 0;
+  min-width: 180px;
+  z-index: 10000;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.custom-context-menu button {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.custom-context-menu button:hover {
+  background: rgba(80, 80, 80, 0.8);
+}
+
+.custom-context-menu button:first-child {
+  border-radius: 8px 8px 0 0;
+}
+
+.custom-context-menu button:last-child {
+  border-radius: 0 0 8px 8px;
+}
+
+/* Базовые стили приложения */
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+
+/* Контейнер приложения */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+/* Контейнер для viewer - основная область просмотра */
+#viewer-container {
+  flex: 1;
+  position: relative;
+  background: #000;
+  overflow: hidden;
+  width: 100%;
+  transition: margin-left 0.3s ease;
+}
+
+/* Обеспечиваем, что A-Frame сцена занимает всю ширину и высоту контейнера */
+#viewer-container a-scene {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#viewer-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Когда панель свернута, область просмотра занимает всю ширину без отступа */
+#sidebar.hide + #viewer-container {
+  margin-left: 0;
+}
+
+/* Когда панель видна, добавляем отступ равный ширине панели для корректного позиционирования */
+#viewer-container {
+  margin-left: 0;
+}
+/* Боковая панель */
+#sidebar {
+  width: 300px;
+  background: rgba(26, 26, 26, 0.7);
+  border-right: 1px solid rgba(51, 51, 51, 0.8);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+  z-index: 1000;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  opacity: 0.95;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+}
+
+#sidebar:hover {
+  background: rgba(26, 26, 26, 0.85);
+  opacity: 1;
+}
+
+#sidebar.hide {
+  transform: translateX(-100%);
+}
+
+#sidebar-toggle {
+  position: absolute;
+  right: -35px;
+  top: 20px;
+  background: rgba(26, 26, 26, 0.8);
+  border: 1px solid rgba(51, 51, 51, 0.8);
+  color: rgba(255, 255, 255, 0.87);
+  padding: 10px 8px;
+  border-radius: 0 6px 6px 0;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1001;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+}
+
+#sidebar-toggle:hover {
+  background: rgba(26, 26, 26, 0.95);
+  border-color: #646cff;
+  transform: scale(1.05);
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid #333;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid #333;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Список сцен */
+#scene-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.scene-item {
+  position: relative;
+  padding: 12px 16px;
+  margin: 4px 0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.scene-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(2px);
+}
+
+.scene-item.selected {
+  background: rgba(100, 108, 255, 0.2);
+  border-color: #646cff;
+  box-shadow: 0 0 10px rgba(100, 108, 255, 0.3);
+}
+
+.scene-item.dragging {
+  opacity: 0.5;
+  transform: rotate(2deg);
+  z-index: 1000;
+}
+
+.scene-item.drag-over {
+  border-color: #646cff;
+  background: rgba(100, 108, 255, 0.1);
+  transform: scale(1.02);
+}
+
+.scene-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.scene-name {
+  flex: 1;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.87);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.scene-menu-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 1;
+  transition: all 0.2s ease;
+  min-width: 24px;
+  text-align: center;
+}
+
+.scene-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  transform: scale(1.1);
+}
+
+/* Контекстные меню */
+.custom-context-menu {
+  position: fixed;
+  background: rgba(26, 26, 26, 0.95);
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 4px 0;
+  z-index: 10000;
+  min-width: 180px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  animation: contextMenuAppear 0.2s ease-out;
+}
+
+@keyframes contextMenuAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.custom-context-menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  color: rgba(255, 255, 255, 0.87);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.custom-context-menu button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 1);
+}
+
+.custom-context-menu button.danger {
+  color: #ff6b6b;
+}
+
+.custom-context-menu button.danger:hover {
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff5252;
+}
+
+/* Индикатор загрузки с бесконечностью */
+#futuristic-progress {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(26, 26, 26, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 30px 40px;
+  z-index: 10001;
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 320px;
+  align-items: center;
+  animation: fadeInLoader 0.25s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes fadeInLoader {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0);
+  }
+}
+
+.infinity-loader {
+  width: 80px;
+  height: 40px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.infinity-symbol {
+  width: 80px;
+  height: 40px;
+  position: relative;
+  transform: rotate(-45deg);
+}
+
+.infinity-symbol::before,
+.infinity-symbol::after {
+  content: "";
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border: 3px solid transparent;
+  border-radius: 50%;
+  border-top-color: #646cff;
+  border-right-color: #8b5cf6;
+  border-bottom-color: #ec4899;
+  border-left-color: #f59e0b;
+  animation:
+    infinityRotate 2s linear infinite,
+    infinityColors 4s ease-in-out infinite;
+}
+
+.infinity-symbol::before {
+  top: 0;
+  left: 0;
+  animation-delay: 0s;
+}
+
+.infinity-symbol::after {
+  top: 0;
+  right: 0;
+  animation-delay: 1s;
+  animation-direction: reverse;
+}
+
+@keyframes infinityRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes infinityColors {
+  0%,
+  100% {
+    border-top-color: #646cff;
+    border-right-color: #8b5cf6;
+    border-bottom-color: #ec4899;
+    border-left-color: #f59e0b;
+    box-shadow: 0 0 15px rgba(100, 108, 255, 0.6);
+  }
+  25% {
+    border-top-color: #8b5cf6;
+    border-right-color: #ec4899;
+    border-bottom-color: #f59e0b;
+    border-left-color: #10b981;
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
+  }
+  50% {
+    border-top-color: #ec4899;
+    border-right-color: #f59e0b;
+    border-bottom-color: #10b981;
+    border-left-color: #646cff;
+    box-shadow: 0 0 15px rgba(236, 72, 153, 0.6);
+  }
+  75% {
+    border-top-color: #f59e0b;
+    border-right-color: #10b981;
+    border-bottom-color: #646cff;
+    border-left-color: #8b5cf6;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+  }
+}
+
+#futuristic-progress .label {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 14px;
+  text-align: center;
+  font-weight: 500;
+  margin-top: 10px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.3px;
+}
+
+/* Модальное окно */
+#drop-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(5px);
+}
+
+#drop-zone.hide {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s ease; /* Уменьшили с 0.4s до 0.1s для быстрого скрытия */
+}
+
+#drop-area {
+  border: 2px dashed #646cff;
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  background: rgba(26, 26, 26, 0.9);
+  color: rgba(255, 255, 255, 0.87);
+  transition: all 0.3s ease;
+  min-width: 300px;
+  max-width: 500px;
+  backdrop-filter: blur(10px);
+}
+
+#drop-area:hover {
+  border-color: #535bf2;
+  background: rgba(26, 26, 26, 0.95);
+  transform: scale(1.02);
+}
+
+#drop-area.drag-over {
+  border-color: #00ff88;
+  background: rgba(0, 255, 136, 0.1);
+  transform: scale(1.05);
+}
+
+/* Кнопки */
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  color: rgba(255, 255, 255, 0.87);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.6s ease;
+}
+
+button:hover::before {
+  left: 100%;
+}
+
+button:hover {
+  border-color: #646cff;
+  background-color: rgba(100, 108, 255, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 2px solid #646cff;
+  outline-offset: 2px;
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary {
+  background-color: #646cff;
+  color: white;
+  border-color: #646cff;
+}
+
+.btn-primary:hover {
+  background-color: #535bf2;
+  border-color: #535bf2;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.form-actions button {
+  flex: 0 0 auto;
+}
+
+.btn-danger {
+  background-color: #ff6b6b;
+  color: white;
+  border-color: #ff6b6b;
+}
+
+.btn-danger:hover {
+  background-color: #ff5252;
+  border-color: #ff5252;
+}
+
+/* Панель инструментов */
+.toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.toolbar button {
+  margin: 2px;
+}
+
+/* Современные стили для SVG иконок */
+.modern-icon-btn {
+  min-width: 44px !important;
+  width: 44px !important;
+  height: 44px !important;
+  padding: 12px !important;
+  background: linear-gradient(
+    135deg,
+    rgba(100, 108, 255, 0.1),
+    rgba(139, 92, 246, 0.1)
+  ) !important;
+  border: 1px solid rgba(100, 108, 255, 0.2) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(10px) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.modern-icon-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(100, 108, 255, 0.15),
+    rgba(139, 92, 246, 0.15)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 11px;
+}
+
+.modern-icon-btn:hover::before {
+  opacity: 1;
+}
+
+.modern-icon-btn:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(100, 108, 255, 0.2),
+    rgba(139, 92, 246, 0.2)
+  ) !important;
+  border-color: rgba(100, 108, 255, 0.4) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: 0 8px 20px rgba(100, 108, 255, 0.3) !important;
+}
+
+.modern-icon-btn:active {
+  transform: translateY(0) scale(0.98) !important;
+  transition: all 0.1s ease !important;
+}
+
+.modern-icon-btn svg {
+  width: 20px;
+  height: 20px;
+  color: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  z-index: 1;
+  position: relative;
+}
+
+.modern-icon-btn:hover svg {
+  color: #ffffff;
+  transform: scale(1.1);
+  filter: drop-shadow(0 4px 8px rgba(100, 108, 255, 0.4));
+}
+
+/* Специальные цвета для разных типов кнопок */
+#save-project.modern-icon-btn {
+  background: linear-gradient(
+    135deg,
+    rgba(76, 175, 80, 0.1),
+    rgba(56, 142, 60, 0.1)
+  ) !important;
+  border-color: rgba(76, 175, 80, 0.2) !important;
+}
+
+#save-project.modern-icon-btn:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(76, 175, 80, 0.2),
+    rgba(56, 142, 60, 0.2)
+  ) !important;
+  border-color: rgba(76, 175, 80, 0.4) !important;
+  box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3) !important;
+}
+
+#export-btn.modern-icon-btn {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 152, 0, 0.1),
+    rgba(245, 124, 0, 0.1)
+  ) !important;
+  border-color: rgba(255, 152, 0, 0.2) !important;
+}
+
+#export-btn.modern-icon-btn:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 152, 0, 0.2),
+    rgba(245, 124, 0, 0.2)
+  ) !important;
+  border-color: rgba(255, 152, 0, 0.4) !important;
+  box-shadow: 0 8px 20px rgba(255, 152, 0, 0.3) !important;
+}
+
+#cleanup-btn.modern-icon-btn,
+#clear-camera-view-btn.modern-icon-btn {
+  background: linear-gradient(
+    135deg,
+    rgba(244, 67, 54, 0.1),
+    rgba(211, 47, 47, 0.1)
+  ) !important;
+  border-color: rgba(244, 67, 54, 0.2) !important;
+}
+
+#cleanup-btn.modern-icon-btn:hover,
+#clear-camera-view-btn.modern-icon-btn:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(244, 67, 54, 0.2),
+    rgba(211, 47, 47, 0.2)
+  ) !important;
+  border-color: rgba(244, 67, 54, 0.4) !important;
+  box-shadow: 0 8px 20px rgba(244, 67, 54, 0.3) !important;
+}
+
+/* Заголовки */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 16px 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 2.2em;
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: 1.4em;
+}
+
+h3 {
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+/* Ссылки */
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #535bf2;
+}
+
+/* Скрытые элементы */
+.hidden {
+  display: none !important;
+}
+
+/* Стили для Photo Sphere Viewer */
+.psv-container {
+  height: 100%;
+  background: #000;
+}
+
+.psv-marker {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.psv-marker:hover {
+  transform: scale(1.2);
+}
+
+.psv-marker--selected {
+  transform: scale(1.2);
+}
+
+.psv-tooltip {
+  background: rgba(34, 39, 46, 0.9);
+  color: #e0f7fa;
+  border: 1px solid #646cff;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 14px;
+  box-shadow: 0 0 10px rgba(100, 108, 255, 0.3);
+}
+
+/* Zoom контролы */
+#zoom-controls {
+  position: fixed;
+  right: 32px;
+  bottom: 48px;
+  z-index: 2100;
+  background: rgba(26, 26, 26, 0.92);
+  border: 1.5px solid #646cff;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(100, 108, 255, 0.3);
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  padding: 10px 18px;
+  backdrop-filter: blur(10px);
+}
+
+#zoom-controls button {
+  font-size: 1.5em;
+  background: none;
+  border: none;
+  color: #646cff;
+  cursor: pointer;
+  margin: 0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+#zoom-controls button:hover {
+  background: rgba(100, 108, 255, 0.2);
+  color: #535bf2;
+  transform: scale(1.1);
+}
+
+/* Уведомления */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(26, 26, 26, 0.95);
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 16px 20px;
+  color: rgba(255, 255, 255, 0.87);
+  z-index: 10002;
+  min-width: 250px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  animation: notificationSlide 0.3s ease-out;
+}
+
+@keyframes notificationSlide {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.notification.success {
+  border-color: #4caf50;
+}
+
+.notification.error {
+  border-color: #f44336;
+}
+
+.notification.warning {
+  border-color: #ff9800;
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+  #sidebar {
+    width: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  #sidebar {
+    width: 260px;
+    position: absolute;
+    height: 100%;
+    z-index: 2000;
+  }
+
+  #sidebar.hide {
+    transform: translateX(-100%);
+  }
+
+  .scene-item {
+    padding: 10px 12px;
+  }
+
+  .scene-name {
+    font-size: 13px;
+  }
+
+  .custom-context-menu {
+    min-width: 160px;
+  }
+
+  #futuristic-progress {
+    min-width: 280px;
+    padding: 16px 24px;
+  }
+
+  #drop-area {
+    min-width: 280px;
+    padding: 30px;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbar button {
+    margin: 2px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  #sidebar {
+    width: 100%;
+  }
+
+  .sidebar-header,
+  .sidebar-footer {
+    padding: 16px;
+  }
+
+  .sidebar-content {
+    padding: 12px;
+  }
+
+  button {
+    padding: 0.5em 1em;
+    font-size: 0.9em;
+  }
+
+  h2 {
+    font-size: 1.2em;
+  }
+
+  #zoom-controls {
+    right: 16px;
+    bottom: 32px;
+    padding: 8px 12px;
+  }
+
+  #zoom-controls button {
+    font-size: 1.2em;
+  }
+}
+
+/* Темы */
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  body {
+    background: #f5f5f5;
+  }
+
+  #sidebar {
+    background: rgba(255, 255, 255, 0.95);
+    border-right-color: #ddd;
+  }
+
+  .scene-item {
+    background: rgba(0, 0, 0, 0.05);
+    color: #213547;
+  }
+
+  .scene-item:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .custom-context-menu {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: #ddd;
+  }
+
+  .custom-context-menu button {
+    color: #213547;
+  }
+
+  button {
+    background-color: #f9f9f9;
+    color: #213547;
+  }
+}
+
+/* Анимации для улучшения UX */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Кастомный скроллбар */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 108, 255, 0.6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 108, 255, 0.8);
+}
+
+/* Эффекты загрузки */
+.loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Стили для маркеров */
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:hover {
+  cursor: grab;
+}
+
+.interactive.dragging {
+  cursor: grabbing;
+}
+
+/* Улучшение отображения текста маркеров */
+a-text {
+  pointer-events: none;
+  font-family: "Arial", sans-serif;
+}
+
+/* Анимация для текста маркеров */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
