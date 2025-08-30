@@ -126,13 +126,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // --- Обработчики событий UI ---
 
-      // Боковая панель
+      // Боковая панель с мобильной адаптацией
       const sidebar = document.getElementById('sidebar');
       const toggle = document.getElementById('sidebar-toggle');
       if (sidebar && toggle) {
         toggle.onclick = function () {
-          sidebar.classList.toggle('hide');
-          toggle.textContent = sidebar.classList.contains('hide') ? '⮞' : '⮜';
+          if (window.innerWidth <= 768) {
+            // Мобильное меню
+            sidebar.classList.toggle('show');
+            toggle.textContent = sidebar.classList.contains('show') ? '✕' : '☰';
+          } else {
+            // Десктопное меню
+            sidebar.classList.toggle('hide');
+            const isHidden = sidebar.classList.contains('hide');
+            toggle.textContent = isHidden ? '⮞' : '⮜';
+
+            // Прямое управление позицией кнопки
+            if (isHidden) {
+              toggle.style.left = '0px';
+              toggle.style.background = 'rgba(100, 108, 255, 0.9)';
+              toggle.style.borderColor = 'rgba(100, 108, 255, 0.5)';
+            } else {
+              toggle.style.left = '300px';
+              toggle.style.background = 'rgba(26, 26, 26, 0.95)';
+              toggle.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            }
+          }
 
           // Уведомляем A-Frame о изменении размера окна для корректного обновления
           setTimeout(() => {
@@ -150,6 +169,35 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           }, 300); // Задержка соответствует CSS transition
         };
+
+        // Инициализация для мобильных устройств
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('show');
+          toggle.textContent = '☰';
+        }
+
+        // Обработка изменения размера экрана
+        window.addEventListener('resize', () => {
+          if (window.innerWidth > 768) {
+            sidebar.classList.remove('show');
+            toggle.textContent = sidebar.classList.contains('hide') ? '⮞' : '⮜';
+          } else {
+            sidebar.classList.remove('hide');
+            toggle.textContent = sidebar.classList.contains('show') ? '✕' : '☰';
+            toggle.style.left = '10px';
+          }
+        });
+
+        // Закрытие мобильного меню при клике вне его
+        document.addEventListener('click', (e) => {
+          if (window.innerWidth <= 768 &&
+            sidebar.classList.contains('show') &&
+            !sidebar.contains(e.target) &&
+            !toggle.contains(e.target)) {
+            sidebar.classList.remove('show');
+            toggle.textContent = '☰';
+          }
+        });
       }
 
       // Полноэкранный режим
@@ -290,13 +338,51 @@ document.addEventListener('DOMContentLoaded', () => {
       const dropArea = document.getElementById('drop-area');
       const fileInput = document.getElementById('file-input');
 
+      if (dropZone) {
+        // Показываем окно загрузки при первой загрузке
+        dropZone.style.cssText = `
+          display: flex !important;
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
+          background: rgba(0, 0, 0, 0.75) !important;
+          z-index: 99999 !important;
+          align-items: center !important;
+          justify-content: center !important;
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          backdrop-filter: blur(8px) !important;
+        `;
+        dropZone.classList.add('show');
+      }
+
       if (openUploadBtn && dropZone) {
         openUploadBtn.onclick = () => {
-          dropZone.style.display = 'flex';
+          // Принудительно устанавливаем все стили
+          dropZone.style.cssText = `
+            display: flex !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.75) !important;
+            z-index: 99999 !important;
+            align-items: center !important;
+            justify-content: center !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            backdrop-filter: blur(8px) !important;
+          `;
+
+          dropZone.classList.add('show');
         };
         dropZone.addEventListener('click', (e) => {
           if (e.target.id === 'drop-zone') {
-            dropZone.style.display = 'none';
+            dropZone.classList.remove('show');
+            dropZone.style.cssText = 'display: none !important;';
           }
         });
       }
@@ -328,7 +414,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // Мгновенно скрываем окно загрузки
           if (dropZone) {
-            dropZone.style.display = 'none';
+            dropZone.classList.remove('show');
+            dropZone.style.cssText = 'display: none !important;';
           }
 
           // Показываем индикатор загрузки
@@ -382,9 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
             a.download = 'panorama-project.json';
             a.click();
             URL.revokeObjectURL(a.href);
-            // project saved
           } catch (error) {
-            console.error('Ошибка при сохранении проекта:', error);
             alert('Ошибка при сохранении проекта');
           }
         };
@@ -402,7 +487,8 @@ document.addEventListener('DOMContentLoaded', () => {
           if (file) {
             // ИСПРАВЛЕНИЕ: Мгновенно скрываем окно загрузки
             if (dropZone) {
-              dropZone.style.display = 'none';
+              dropZone.classList.remove('show');
+              dropZone.style.cssText = 'display: none !important;';
             }
 
             // Показываем индикатор загрузки
@@ -444,7 +530,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // ИСПРАВЛЕНИЕ: Мгновенно скрываем окно загрузки и показываем прогресс
           if (dropZone) {
-            dropZone.style.display = 'none';
+            dropZone.classList.remove('show');
+            dropZone.style.cssText = 'display: none !important;';
           }
 
           // Показываем индикатор загрузки сразу
@@ -479,7 +566,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             sceneList.render();
           } catch (error) {
-            console.error('Ошибка при загрузке панорам:', error);
             if (viewerManager) {
               viewerManager.hideGlobalLoading();
             }
@@ -501,46 +587,51 @@ document.addEventListener('DOMContentLoaded', () => {
         settingsModal.innerHTML = `
                     <div class="modal-content">
                         <span class="close-btn settings-close">&times;</span>
-                        <h3>Настройки приложения</h3>
                         
-                        <div class="settings-section">
-                            <h4>Управление камерой</h4>
-                            <label>
-                                <input type="range" id="mouse-sensitivity" min="0.1" max="2" step="0.1" value="1">
-                                Чувствительность мыши: <span id="sensitivity-value">1</span>
-                            </label>
-                            <label>
-                                <input type="range" id="zoom-speed" min="1" max="10" step="1" value="5">
-                                Скорость зума (кнопки +/- и колесико мыши): <span id="zoom-speed-value">5</span>
-                            </label>
-              <label style="display:flex;align-items:center;gap:8px;margin-top:6px;">
-                <input type="checkbox" id="gyro-enabled">
-                Включить гироскоп (на мобильных устройствах)
-              </label>
-                        </div>
-                        
-                        <div class="settings-section">
-                            <h4>Хотспоты по умолчанию</h4>
-                            <label>
-                                <input type="color" id="default-hotspot-color" value="#00ff00">
-                                Цвет хотспотов
-                            </label>
-                            <label>
-                                <input type="range" id="default-hotspot-size" min="0.1" max="1" step="0.1" value="0.3">
-                                Размер хотспотов: <span id="hotspot-size-value">0.3</span>
-                            </label>
-                        </div>
-                        
-                        <div class="settings-section">
-                            <h4>Инфоточки по умолчанию</h4>
-                            <label>
-                                <input type="color" id="default-infopoint-color" value="#ffcc00">
-                                Цвет инфоточек
-                            </label>
-                            <label>
-                                <input type="range" id="default-infopoint-size" min="0.1" max="1" step="0.1" value="0.3">
-                                Размер инфоточек: <span id="infopoint-size-value">0.3</span>
-                            </label>
+                        <div class="settings-container">
+                            <div class="settings-group">
+                                <h4>Управление камерой</h4>
+                                <label>
+                                    <input type="range" id="mouse-sensitivity" min="0.1" max="2" step="0.1" value="1">
+                                    Чувствительность мыши: <span id="sensitivity-value">1</span>
+                                </label>
+                                <label>
+                                    <input type="range" id="zoom-speed" min="1" max="10" step="1" value="5">
+                                    Скорость зума (кнопки +/- и колесико мыши): <span id="zoom-speed-value">5</span>
+                                </label>
+                  <label style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+                    <input type="checkbox" id="gyro-enabled">
+                    Включить гироскоп (на мобильных устройствах)
+                  </label>
+                            </div>
+                            
+                            <div class="settings-divider"></div>
+                            
+                            <div class="settings-group">
+                                <h4>Хотспоты по умолчанию</h4>
+                                <label>
+                                    <input type="color" id="default-hotspot-color" value="#00ff00">
+                                    Цвет хотспотов
+                                </label>
+                                <label>
+                                    <input type="range" id="default-hotspot-size" min="0.1" max="1" step="0.1" value="0.3">
+                                    Размер хотспотов: <span id="hotspot-size-value">0.3</span>
+                                </label>
+                            </div>
+                            
+                            <div class="settings-divider"></div>
+                            
+                            <div class="settings-group">
+                                <h4>Инфоточки по умолчанию</h4>
+                                <label>
+                                    <input type="color" id="default-infopoint-color" value="#ffcc00">
+                                    Цвет инфоточек
+                                </label>
+                                <label>
+                                    <input type="range" id="default-infopoint-size" min="0.1" max="1" step="0.1" value="0.3">
+                                    Размер инфоточек: <span id="infopoint-size-value">0.3</span>
+                                </label>
+                            </div>
                         </div>
                         
                         <button onclick="applySettings()" class="btn-primary">Применить настройки</button>
@@ -655,8 +746,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Удалены диагностические утилиты и тестовые хендлеры для продакшна
 
     } catch (error) {
-      console.error('Критическая ошибка при инициализации приложения:', error);
-      alert('Ошибка инициализации приложения. Проверьте консоль для деталей.');
+      alert('Ошибка инициализации приложения. Перезагрузите страницу.');
     }
   }, 100);
 });

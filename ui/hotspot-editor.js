@@ -251,45 +251,45 @@ export default class HotspotEditor {
 
   toggleFieldsByType(type) {
     const targetSceneGroup = this.form.querySelector('.form-group-target-scene');
-    const textStyleGroups = this.form.querySelectorAll('.form-group-text-style');
-    const markerStyleGroups = this.form.querySelectorAll('.form-group-marker-style');
-    const videoGroups = this.form.querySelectorAll('.form-group-video');
-    const videoSizeGroups = this.form.querySelectorAll('.form-group-video-size');
-    const chromaGroups = this.form.querySelectorAll('.form-group-chroma');
-    const iframeGroups = this.form.querySelectorAll('.form-group-iframe');
+    const textStyleSections = this.form.querySelectorAll('.form-section.form-group-text-style');
+    const markerStyleSections = this.form.querySelectorAll('.form-section.form-group-marker-style');
+    const videoSections = this.form.querySelectorAll('.form-section.form-group-video');
+    const videoSizeSections = this.form.querySelectorAll('.form-section.form-group-video-size');
+    const chromaSections = this.form.querySelectorAll('.form-section.form-group-chroma');
+    const iframeSections = this.form.querySelectorAll('.form-section.form-group-iframe');
 
     if (targetSceneGroup) {
       targetSceneGroup.style.display = type === 'hotspot' ? 'block' : 'none';
     }
 
-    textStyleGroups.forEach(group => {
-      group.style.display = (type === 'info-point' || type === 'hotspot') ? 'block' : 'none';
+    textStyleSections.forEach(section => {
+      section.style.display = (type === 'info-point' || type === 'hotspot') ? 'block' : 'none';
     });
 
     // Видео поля показываем для video-area и animated-object
     const showVideo = (type === 'video-area' || type === 'animated-object');
-    videoGroups.forEach(group => {
-      group.style.display = showVideo ? 'block' : 'none';
+    videoSections.forEach(section => {
+      section.style.display = showVideo ? 'block' : 'none';
     });
 
     // Размеры показываем также для iframe-3d
-    videoSizeGroups.forEach(group => {
-      group.style.display = (showVideo || type === 'iframe-3d') ? 'block' : 'none';
+    videoSizeSections.forEach(section => {
+      section.style.display = (showVideo || type === 'iframe-3d') ? 'block' : 'none';
     });
 
     // Параметры хромакея только для animated-object
-    chromaGroups.forEach(group => {
-      group.style.display = type === 'animated-object' ? 'block' : 'none';
+    chromaSections.forEach(section => {
+      section.style.display = type === 'animated-object' ? 'block' : 'none';
     });
 
     // Поля настройки маркера доступны для hotspot и info-point, но не для video-area и iframe-3d
-    markerStyleGroups.forEach(group => {
-      group.style.display = (type !== 'video-area' && type !== 'iframe-3d') ? 'block' : 'none';
+    markerStyleSections.forEach(section => {
+      section.style.display = (type !== 'video-area' && type !== 'iframe-3d') ? 'block' : 'none';
     });
 
     // Поле iframe URL только для iframe-3d
-    iframeGroups.forEach(group => {
-      group.style.display = (type === 'iframe-3d') ? 'block' : 'none';
+    iframeSections.forEach(section => {
+      section.style.display = (type === 'iframe-3d') ? 'block' : 'none';
     });
   }
 

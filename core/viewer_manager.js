@@ -1,4 +1,5 @@
 import CoordinateManager from './coordinate_manager.js';
+import ModernMarkerGenerator from './modern_marker_generator.js';
 
 export default class ViewerManager {
   constructor(containerId, hotspotManager) {
@@ -10,6 +11,7 @@ export default class ViewerManager {
     this.zoomSpeed = 1.0; // Скорость зума по умолчанию
     this.hotspotManager = hotspotManager; // Ссылка на менеджер хотспотов
     this.coordinateManager = new CoordinateManager(this); // Передаем ссылку на ViewerManager
+    this.modernMarkerGenerator = new ModernMarkerGenerator(); // Генератор современных маркеров
 
     // Флаги состояния
     this._isResizing = false;
@@ -2029,60 +2031,72 @@ export default class ViewerManager {
       console.log('Пользовательская иконка создана с ID текстуры:', textureId);
 
     } else {
-      // Создаем стандартную геометрическую фигуру
-      switch (icon) {
-        case 'cube':
-          shape = document.createElement('a-box');
-          shape.setAttribute('width', radius);
-          shape.setAttribute('height', radius);
-          shape.setAttribute('depth', radius);
-          break;
-        case 'cylinder':
-          shape = document.createElement('a-cylinder');
-          shape.setAttribute('radius', radius);
-          shape.setAttribute('height', radius * 2);
-          break;
-        case 'octahedron':
-          shape = document.createElement('a-octahedron');
-          shape.setAttribute('radius', radius);
-          break;
-        case 'arrow':
-          // Создаем простую навигационную стрелку (только конус)
-          shape = document.createElement('a-cone');
-          shape.setAttribute('radius-bottom', radius * 0.8);
-          shape.setAttribute('radius-top', '0');
-          shape.setAttribute('height', radius * 1.5);
-          shape.setAttribute('color', color);
-          shape.setAttribute('position', '0 0 0');
-          shape.setAttribute('rotation', '0 0 0');
+      // Создаем современный SVG маркер высокого разрешения
+      const modernMarkerSvg = this.modernMarkerGenerator.createModernMarker(hotspot.type, 1024, {
+        color: color,
+        hotspot: hotspot
+      });
 
-          // Добавляем компонент для автоматического поворота от камеры
-          shape.setAttribute('navigation-arrow', '');
-          break;
-        default: // sphere
-          shape = document.createElement('a-sphere');
-          shape.setAttribute('radius', radius);
-          break;
+      // Создаем плоскость для SVG маркера
+      shape = document.createElement('a-plane');
+
+      // Создаем уникальный ID для текстуры
+      const textureId = `modern-marker-${hotspot.type}-${hotspot.id}`;
+
+      // Конвертируем SVG в data URL
+      const svgData = new XMLSerializer().serializeToString(modernMarkerSvg);
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+
+      // Создаем элемент img для текстуры
+      const img = document.createElement('img');
+      img.id = textureId;
+      img.src = url;
+      img.crossOrigin = 'anonymous';
+      img.style.display = 'none';
+
+      // Добавляем изображение в assets
+      let assets = this.aframeScene.querySelector('a-assets');
+      if (!assets) {
+        assets = document.createElement('a-assets');
+        this.aframeScene.appendChild(assets);
       }
+      assets.appendChild(img);
 
-      // Применяем цвет и прозрачность для всех фигур
-      shape.setAttribute('color', color);
-      shape.setAttribute('opacity', '0.9');
-      shape.setAttribute('material', 'transparent: true');
+      // Ждем загрузки изображения
+      img.onload = () => {
+        // Настраиваем материал с текстурой
+        shape.setAttribute('material', {
+          src: `#${textureId}`,
+          transparent: true,
+          alphaTest: 0.1,
+          side: 'double'
+        });
+      };
+
+      // Устанавливаем размер (больше для лучшей видимости)
+      const markerSize = radius * 2.5;
+      shape.setAttribute('width', markerSize);
+      shape.setAttribute('height', markerSize);
+
+      // Делаем маркер всегда повернутым к камере
+      shape.setAttribute('billboard', '');
+
+      console.log('Современный маркер создан:', hotspot.type, 'размер:', markerSize);
     }
 
     // Добавляем класс для raycaster
-    shape.className = 'interactive';
+    shape.className = 'interactive modern-marker';
 
     // Добавляем наш компонент для обработки взаимодействий
     shape.setAttribute('hotspot-handler', `hotspotId: ${hotspot.id}; hotspotType: ${hotspot.type}`);
 
-    // Анимация пульсации
-    shape.setAttribute('animation__pulse', 'property: scale; to: 1.2 1.2 1.2; dir: alternate; loop: true; dur: 1000; easing: easeInOutSine;');
+    // Современные анимации с плавными переходами
+    shape.setAttribute('animation__float', 'property: position; to: 0 0.3 0; dir: alternate; loop: true; dur: 2000; easing: easeInOutSine;');
 
-    // Анимации при наведении
-    shape.setAttribute('animation__hover_on', 'property: scale; to: 1.4 1.4 1.4; startEvents: mouseenter; dur: 200;');
-    shape.setAttribute('animation__hover_off', 'property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200;');
+    // Плавные анимации при наведении (используем transform вместо scale для лучшей производительности)
+    shape.setAttribute('animation__hover_on', 'property: scale; to: 1.3 1.3 1.3; startEvents: mouseenter; dur: 300; easing: easeOutElastic;');
+    shape.setAttribute('animation__hover_off', 'property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200; easing: easeInOutQuad;');
 
     console.log('Фигура создана:', shape.tagName, shape.getAttribute('radius') || shape.getAttribute('width'));
 

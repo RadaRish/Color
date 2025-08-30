@@ -5,15 +5,12 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "start": "live-server --port=5500 --host=localhost --open=/index.html",
+    "start": "npm run serve",
     "dev": "live-server --port=5500 --host=localhost --watch=. --open=/index.html",
-    "debug": "live-server --port=5500 --host=localhost --no-browser",
     "lint": "eslint **/*.js --fix",
     "format": "prettier --write **/*.{js,css,html,json}",
     "validate": "html-validate index.html",
-    "test-syntax": "node -c main.js && node -c core/*.js && node -c ui/*.js",
     "build": "npm run lint && npm run format && npm run validate",
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand --config jest.config.cjs",
     "serve": "python -m http.server 5500"
   },
   "keywords": [
@@ -28,9 +25,7 @@
     "eslint": "^8.50.0",
     "prettier": "^3.0.3",
     "html-validate": "^8.5.0",
-    "live-server": "^1.2.2",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0"
+    "live-server": "^1.2.2"
   },
   "dependencies": {
     "@photo-sphere-viewer/core": "^5.0.0",

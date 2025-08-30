@@ -337,6 +337,88 @@ class ExportManager {
     }
 
     /**
+     * Создает современный SVG маркер со стрелкой (синхронизировано с редактором)
+     */
+    createModernArrowSVG(color, size) {
+        const highResolution = 512;
+        const center = highResolution / 2;
+        const iconSize = center * 0.4;
+
+        return `<svg width="${highResolution}" height="${highResolution}" viewBox="0 0 ${highResolution} ${highResolution}" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <radialGradient id="gradient-hotspot" cx="40%" cy="30%" r="60%">
+                    <stop offset="0%" stop-color="#64B5F6" stop-opacity="1"/>
+                    <stop offset="60%" stop-color="#2196F3" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#42A5F5" stop-opacity="0.8"/>
+                </radialGradient>
+                <filter id="glow-hotspot" x="-100%" y="-100%" width="300%" height="300%">
+                    <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            <g class="marker-content">
+                <!-- Основной фон маркера -->
+                <polygon points="${center},${center * 0.3} ${center * 1.4},${center * 0.8} ${center * 1.15},${center * 0.8} ${center * 1.15},${center * 1.4} ${center * 0.85},${center * 1.4} ${center * 0.85},${center * 0.8} ${center * 0.6},${center * 0.8}" 
+                         fill="url(#gradient-hotspot)" 
+                         filter="url(#glow-hotspot)" 
+                         stroke="rgba(255, 255, 255, 0.4)" 
+                         stroke-width="3"/>
+                <!-- Стрелка (увеличенная в 2 раза) -->
+                <g fill="#ffffff" opacity="0.95">
+                    <circle cx="${center}" cy="${center}" r="${iconSize}" fill="none" stroke="currentColor" stroke-width="8"/>
+                    <polygon points="${center},${center - iconSize * 1.6} ${center - iconSize * 0.6},${center + iconSize * 0.6} ${center},${center} ${center + iconSize * 0.6},${center + iconSize * 0.6}" fill="currentColor"/>
+                </g>
+            </g>
+        </svg>`;
+    }
+
+    /**
+     * Создает современный SVG маркер с иконкой "i" (синхронизировано с редактором)
+     */
+    createModernInfoSVG(color, size) {
+        const highResolution = 512;
+        const center = highResolution / 2;
+        const iconSize = center * 0.4;
+
+        return `<svg width="${highResolution}" height="${highResolution}" viewBox="0 0 ${highResolution} ${highResolution}" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <radialGradient id="gradient-info" cx="40%" cy="30%" r="60%">
+                    <stop offset="0%" stop-color="#81C784" stop-opacity="1"/>
+                    <stop offset="60%" stop-color="#4CAF50" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#66BB6A" stop-opacity="0.8"/>
+                </radialGradient>
+                <filter id="glow-info" x="-100%" y="-100%" width="300%" height="300%">
+                    <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            <g class="marker-content">
+                <!-- Основной фон маркера -->
+                <circle cx="${center}" cy="${center}" r="${center * 0.7}" 
+                        fill="url(#gradient-info)" 
+                        filter="url(#glow-info)" 
+                        stroke="rgba(255, 255, 255, 0.4)" 
+                        stroke-width="3"/>
+                <!-- Иконка "i" в круге -->
+                <g>
+                    <!-- Круг фон для иконки "i" -->
+                    <circle cx="${center}" cy="${center}" r="${iconSize * 0.9}" fill="currentColor" stroke="#ffffff" stroke-width="4"/>
+                    <!-- Точка сверху -->
+                    <circle cx="${center}" cy="${center - iconSize * 0.3}" r="${iconSize * 0.12}" fill="#ffffff"/>
+                    <!-- Вертикальная линия -->
+                    <rect x="${center - iconSize * 0.08}" y="${center - iconSize * 0.05}" width="${iconSize * 0.16}" height="${iconSize * 0.6}" fill="#ffffff" rx="${iconSize * 0.04}"/>
+                </g>
+            </g>
+        </svg>`;
+    }
+
+    /**
      * Конвертирует хотспот в формат для экспорта
      */
     convertHotspot(hotspot, idMap) {
@@ -459,8 +541,12 @@ class ExportManager {
         </div>
         <!-- Индикатор загрузки -->
             <div id="tour-loading" role="status" aria-live="polite" aria-label="Загрузка" style="display:none">
-                <div class="infinity-loader">
-                    <div class="infinity-symbol"></div>
+                <div class="color-logo">
+                    <span class="logo-letter letter-c" data-letter="C">C</span>
+                    <span class="logo-letter letter-o" data-letter="o">o</span>
+                    <span class="logo-letter letter-l" data-letter="l">l</span>
+                    <span class="logo-letter letter-o2" data-letter="o">o</span>
+                    <span class="logo-letter letter-r" data-letter="R">R</span>
                 </div>
                 <div class="loading-text">Загрузка...</div>
             </div>
@@ -1163,19 +1249,36 @@ class TourViewer {
                     try { videoEl.pause(); } catch {}
                 }
             });
-        } else if (hotspot.icon === 'arrow') {
-            // Стрелка из сплюснутого конуса
-            shape = document.createElement('a-cone');
-            shape.setAttribute('height', size * 1.5);
-            shape.setAttribute('radius-bottom', size * 0.8);
-            shape.setAttribute('radius-top', 0);
-            shape.setAttribute('rotation', '0 0 0');
-            shape.setAttribute('color', hotspot.color || '#ff0000');
+        } else if (hotspot.icon === 'arrow' || hotspot.type === 'hotspot') {
+            // Стрелка - создаем SVG маркер для навигации
+            shape = document.createElement('a-plane');
+            const svgData = this.createModernArrowSVG(hotspot.color || '#ff0000', size);
+            const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(svgBlob);
+            shape.setAttribute('material', {
+                src: url,
+                transparent: true,
+                alphaTest: 0.1,
+                side: 'double'
+            });
+            shape.setAttribute('width', size * 3);
+            shape.setAttribute('height', size * 3);
+            shape.setAttribute('billboard', '');
         } else if (hotspot.icon === 'sphere' || hotspot.type === 'info-point' || hotspot.type === 'infopoint') {
-            // Сферический маркер
-            shape = document.createElement('a-sphere');
-            shape.setAttribute('radius', size);
-            shape.setAttribute('color', hotspot.color || '#0099ff');
+            // Информационная точка - создаем SVG маркер с "i" иконкой
+            shape = document.createElement('a-plane');
+            const svgData = this.createModernInfoSVG(hotspot.color || '#0099ff', size);
+            const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(svgBlob);
+            shape.setAttribute('material', {
+                src: url,
+                transparent: true,
+                alphaTest: 0.1,
+                side: 'double'
+            });
+            shape.setAttribute('width', size * 3);
+            shape.setAttribute('height', size * 3);
+            shape.setAttribute('billboard', '');
         } else {
             // Плоский круглый маркер по умолчанию
             shape = document.createElement('a-circle');
@@ -1489,7 +1592,7 @@ body {
     border-color: #36c26a;
 }
 
-/* Индикатор загрузки с бесконечностью */
+/* Индикатор загрузки с ColoR лого */
 #tour-loading { 
   position: fixed; 
   inset: 0; 
@@ -1497,89 +1600,244 @@ body {
   flex-direction: column; 
   align-items: center; 
   justify-content: center; 
-  gap: 18px; 
+  gap: 25px; 
   pointer-events: none; 
   z-index: 2000; 
   font-family: 'Roboto', Arial, sans-serif; 
-  animation: fadeInLoader .25s ease; 
+  animation: fadeInLoader .3s ease; 
   background: transparent;
 }
+#tour-loading::before {
+  display: none;
+}
+#tour-loading::after {
+  display: none;
+}
+@keyframes floatingOrbs {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    opacity: 0.8;
+  }
+  25% {
+    transform: translate(-50%, -50%) scale(1.2) rotate(90deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.8) rotate(180deg);
+    opacity: 1;
+  }
+  75% {
+    transform: translate(-50%, -50%) scale(1.1) rotate(270deg);
+    opacity: 0.7;
+  }
+}
+@keyframes rotatingAura {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
 @keyframes fadeInLoader { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-.infinity-loader {
-  width: 80px;
-  height: 40px;
-  position: relative;
+.color-logo {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.infinity-symbol {
-  width: 80px;
-  height: 40px;
+  gap: 12px;
+  perspective: 2000px;
   position: relative;
-  transform: rotate(-45deg);
+  z-index: 1;
 }
-.infinity-symbol::before,
-.infinity-symbol::after {
-  content: '';
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  border: 3px solid transparent;
-  border-radius: 50%;
-  border-top-color: #646cff;
-  border-right-color: #8b5cf6;
-  border-bottom-color: #ec4899;
-  border-left-color: #f59e0b;
-  animation: infinityRotate 2s linear infinite, infinityColors 4s ease-in-out infinite;
+.color-logo::before {
+  display: none;
 }
-.infinity-symbol::before {
-  top: 0;
-  left: 0;
-  animation-delay: 0s;
+.color-logo::after {
+  display: none;
 }
-.infinity-symbol::after {
-  top: 0;
-  right: 0;
-  animation-delay: 1s;
-  animation-direction: reverse;
-}
-@keyframes infinityRotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-@keyframes infinityColors {
-  0%, 100% {
-    border-top-color: #646cff;
-    border-right-color: #8b5cf6;
-    border-bottom-color: #ec4899;
-    border-left-color: #f59e0b;
-    box-shadow: 0 0 15px rgba(100, 108, 255, 0.6);
+@keyframes floatingParticles {
+  0% {
+    transform: translate(-50%, -50%) translateX(0px) translateY(0px);
   }
   25% {
-    border-top-color: #8b5cf6;
-    border-right-color: #ec4899;
-    border-bottom-color: #f59e0b;
-    border-left-color: #10b981;
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
+    transform: translate(-50%, -50%) translateX(10px) translateY(-5px);
   }
   50% {
-    border-top-color: #ec4899;
-    border-right-color: #f59e0b;
-    border-bottom-color: #10b981;
-    border-left-color: #646cff;
-    box-shadow: 0 0 15px rgba(236, 72, 153, 0.6);
+    transform: translate(-50%, -50%) translateX(-5px) translateY(8px);
   }
   75% {
-    border-top-color: #f59e0b;
-    border-right-color: #10b981;
-    border-bottom-color: #646cff;
-    border-left-color: #8b5cf6;
-    box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+    transform: translate(-50%, -50%) translateX(8px) translateY(3px);
+  }
+  100% {
+    transform: translate(-50%, -50%) translateX(0px) translateY(0px);
   }
 }
-.loading-text { font-size: 15px; letter-spacing: .12em; text-transform: uppercase; background: linear-gradient(90deg, #646cff, #ec4899, #f59e0b, #646cff); background-size: 300% 100%; -webkit-background-clip: text; color: transparent; animation: slideHue 6s linear infinite; font-weight: 500; text-shadow: 0 0 10px rgba(100,108,255,.35); } 
-@keyframes slideHue { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes shimmerWave {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(180deg) scale(1.2);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg) scale(0.8);
+    opacity: 0;
+  }
+}
+.logo-letter {
+  font-size: 84px;
+  font-weight: 700;
+  font-family: Arial, 'Helvetica', sans-serif;
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.8);
+  transform-style: preserve-3d;
+  animation: cleanLogoFloat 4s ease-in-out infinite;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position: relative;
+  overflow: visible;
+}
+.logo-letter::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -5px;
+  right: -5px;
+  bottom: -2px;
+  background: rgba(26, 26, 26, 0.7);
+  border-radius: 8px;
+  z-index: -1;
+  backdrop-filter: blur(10px);
+}
+.logo-letter::after {
+  display: none;
+}
+@keyframes letterGlow {
+  0% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+@keyframes letterHalo {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+.letter-c {
+  color: #ff6b6b;
+  animation-delay: 0s;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 50%, #ffaa1a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.letter-o {
+  color: #4ecdc4;
+  animation-delay: 0.3s;
+  background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 50%, #2ecc71 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.letter-l {
+  color: #45b7d1;
+  animation-delay: 0.6s;
+  background: linear-gradient(135deg, #45b7d1 0%, #667eea 50%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.letter-o2 {
+  color: #f093fb;
+  animation-delay: 0.9s;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #e74c3c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.letter-r {
+  color: #feca57;
+  animation-delay: 1.2s;
+  background: linear-gradient(135deg, #feca57 0%, #ff9ff3 50%, #f39c12 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+@keyframes cleanLogoFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  25% {
+    transform: translateY(-15px) scale(1.02);
+  }
+  50% {
+    transform: translateY(-25px) scale(1.05);
+  }
+  75% {
+    transform: translateY(-10px) scale(1.02);
+  }
+}
+.loading-text {
+  color: rgba(255, 255, 255, 0.98);
+  font-size: 16px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  background: linear-gradient(
+    45deg,
+    #ff6b6b 0%,
+    #4ecdc4 20%,
+    #45b7d1 40%,
+    #f093fb 60%,
+    #feca57 80%,
+    #ff6b6b 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: cleanTextFlow 3s ease-in-out infinite;
+  font-weight: 600;
+  text-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.6);
+  margin-top: 30px;
+  position: relative;
+  overflow: visible;
+  z-index: 10;
+  backdrop-filter: none;
+  filter: none;
+}
+.loading-text::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -5px;
+  right: -5px;
+  bottom: -2px;
+  background: rgba(26, 26, 26, 0.7);
+  border-radius: 8px;
+  z-index: -1;
+  backdrop-filter: blur(10px);
+}
+.loading-text::after {
+  display: none;
+}
+@keyframes cleanTextFlow {
+  0%, 100% {
+    background-position: 0% 50%;
+    transform: scale(1);
+  }
+  50% {
+    background-position: 100% 50%;
+    transform: scale(1.02);
+  }
+}
 
 /* Подсказка (2D) */
 .tour-tooltip {

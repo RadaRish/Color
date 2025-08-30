@@ -2,7 +2,15 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="Панорамный тур - Редактор для создания 360° виртуальных туров"
+    />
+    <meta name="keywords" content="panorama, 360, virtual tour, photo sphere" />
     <title>Панорамный тур - Редактор</title>
 
     <!-- Google Fonts для поддержки кириллицы -->
@@ -43,20 +51,24 @@
       }
 
       .app-container {
-        display: flex;
+        display: block;
         height: 100vh;
+        position: relative;
       }
 
       #sidebar {
         width: 300px;
-        background: rgba(26, 26, 26, 0.95);
-        border-right: 1px solid #333;
+        background: rgba(26, 26, 26, 0.85);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
         flex-direction: column;
-        position: relative;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
         transition: transform 0.3s ease;
         z-index: 1000;
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(15px);
       }
 
       #sidebar.hide {
@@ -64,23 +76,34 @@
       }
 
       #sidebar-toggle {
-        position: absolute;
-        right: -30px;
+        position: fixed;
+        left: 300px;
         top: 20px;
-        background: rgba(26, 26, 26, 0.9);
-        border: 1px solid #333;
+        background: rgba(26, 26, 26, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         color: rgba(255, 255, 255, 0.87);
-        padding: 8px 6px;
-        border-radius: 0 4px 4px 0;
+        padding: 12px 8px;
+        border-radius: 0 8px 8px 0;
         cursor: pointer;
-        font-size: 12px;
-        z-index: 1000;
-        transition: all 0.2s ease;
+        font-size: 14px;
+        font-weight: bold;
+        z-index: 1001;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(15px);
+        box-shadow:
+          2px 0 12px rgba(0, 0, 0, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        min-width: 30px;
+        text-align: center;
       }
 
       #sidebar-toggle:hover {
-        background: rgba(26, 26, 26, 1);
-        border-color: #646cff;
+        background: rgba(100, 108, 255, 0.8);
+        border-color: rgba(100, 108, 255, 0.6);
+        transform: scale(1.05);
+        box-shadow:
+          3px 0 15px rgba(0, 0, 0, 0.5),
+          0 0 20px rgba(100, 108, 255, 0.4);
       }
 
       .panel {
@@ -177,9 +200,13 @@
       }
 
       #viewer-container {
-        flex: 1;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
         background: #000;
-        position: relative;
+        z-index: 1;
       }
 
       .custom-context-menu {
@@ -216,35 +243,6 @@
 
       .custom-context-menu button.danger:hover {
         background: rgba(255, 107, 107, 0.1);
-      }
-
-      #sidebar {
-        width: 300px;
-        background: rgba(26, 26, 26, 0.95);
-        border-right: 1px solid #333;
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        transition: transform 0.3s ease;
-        z-index: 1000;
-      }
-
-      #sidebar.hide {
-        transform: translateX(-100%);
-      }
-
-      #sidebar-toggle {
-        position: absolute;
-        right: -30px;
-        top: 20px;
-        background: rgba(26, 26, 26, 0.9);
-        border: 1px solid #333;
-        color: rgba(255, 255, 255, 0.87);
-        padding: 8px 6px;
-        border-radius: 0 4px 4px 0;
-        cursor: pointer;
-        font-size: 12px;
-        z-index: 1000;
       }
 
       .sidebar-header {
@@ -357,105 +355,117 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: rgba(26, 26, 26, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 30px 40px;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        padding: 40px 50px;
         z-index: 10001;
         display: none;
         flex-direction: column;
-        gap: 20px;
-        min-width: 320px;
+        gap: 25px;
+        min-width: 400px;
         align-items: center;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        backdrop-filter: none;
+        box-shadow: none;
       }
 
-      .infinity-loader {
-        width: 80px;
-        height: 40px;
-        position: relative;
+      .color-logo {
         display: flex;
         align-items: center;
         justify-content: center;
-      }
-
-      .infinity-symbol {
-        width: 80px;
-        height: 40px;
+        gap: 8px;
+        perspective: 1000px;
         position: relative;
-        transform: rotate(-45deg);
       }
 
-      .infinity-symbol::before,
-      .infinity-symbol::after {
-        content: "";
-        position: absolute;
-        width: 32px;
-        height: 32px;
-        border: 3px solid transparent;
-        border-radius: 50%;
-        border-top-color: #646cff;
-        border-right-color: #8b5cf6;
-        border-bottom-color: #ec4899;
-        border-left-color: #f59e0b;
-        animation:
-          infinityRotate 2s linear infinite,
-          infinityColors 4s ease-in-out infinite;
+      .logo-letter {
+        font-size: 72px;
+        font-weight: 600;
+        font-family: "Arial", "Helvetica", sans-serif;
+        text-shadow:
+          0 0 30px currentColor,
+          0 0 60px currentColor,
+          2px 2px 0px rgba(0, 0, 0, 0.5),
+          4px 4px 0px rgba(0, 0, 0, 0.3),
+          6px 6px 0px rgba(0, 0, 0, 0.2),
+          8px 8px 0px rgba(0, 0, 0, 0.1),
+          10px 10px 20px rgba(0, 0, 0, 0.4);
+        transform-style: preserve-3d;
+        animation: letterFloat 3s ease-in-out infinite;
+        transition: all 0.3s ease;
+        filter: drop-shadow(0 0 15px currentColor);
       }
 
-      .infinity-symbol::before {
-        top: 0;
-        left: 0;
+      .letter-c {
+        color: #ff6b6b;
         animation-delay: 0s;
+        background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
 
-      .infinity-symbol::after {
-        top: 0;
-        right: 0;
-        animation-delay: 1s;
-        animation-direction: reverse;
+      .letter-o {
+        color: #4ecdc4;
+        animation-delay: 0.2s;
+        background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
 
-      @keyframes infinityRotate {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
+      .letter-l {
+        color: #45b7d1;
+        animation-delay: 0.4s;
+        background: linear-gradient(45deg, #45b7d1, #667eea);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
 
-      @keyframes infinityColors {
+      .letter-o2 {
+        color: #f093fb;
+        animation-delay: 0.6s;
+        background: linear-gradient(45deg, #f093fb, #f5576c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .letter-r {
+        color: #feca57;
+        animation-delay: 0.8s;
+        background: linear-gradient(45deg, #feca57, #ff9ff3);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      @keyframes letterFloat {
         0%,
         100% {
-          border-top-color: #646cff;
-          border-right-color: #8b5cf6;
-          border-bottom-color: #ec4899;
-          border-left-color: #f59e0b;
-          box-shadow: 0 0 15px rgba(100, 108, 255, 0.6);
+          transform: translateY(0px) rotateX(0deg) rotateY(0deg) translateZ(0px);
+          filter: brightness(1) blur(0px) drop-shadow(0 0 15px currentColor);
         }
         25% {
-          border-top-color: #8b5cf6;
-          border-right-color: #ec4899;
-          border-bottom-color: #f59e0b;
-          border-left-color: #10b981;
-          box-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
+          transform: translateY(-15px) rotateX(15deg) rotateY(8deg)
+            translateZ(20px);
+          filter: brightness(1.4) blur(0px) drop-shadow(0 0 25px currentColor);
         }
         50% {
-          border-top-color: #ec4899;
-          border-right-color: #f59e0b;
-          border-bottom-color: #10b981;
-          border-left-color: #646cff;
-          box-shadow: 0 0 15px rgba(236, 72, 153, 0.6);
+          transform: translateY(-30px) rotateX(0deg) rotateY(-8deg)
+            translateZ(40px);
+          filter: brightness(1.6) blur(1px) drop-shadow(0 0 35px currentColor);
         }
         75% {
-          border-top-color: #f59e0b;
-          border-right-color: #10b981;
-          border-bottom-color: #646cff;
-          border-left-color: #8b5cf6;
-          box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+          transform: translateY(-15px) rotateX(-15deg) rotateY(8deg)
+            translateZ(20px);
+          filter: brightness(1.3) blur(0px) drop-shadow(0 0 25px currentColor);
         }
+      }
+
+      .color-logo::before {
+        display: none;
       }
 
       #futuristic-progress .label {
@@ -465,42 +475,32 @@
         font-weight: 500;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
         letter-spacing: 0.3px;
+        margin-top: 20px;
+        background: linear-gradient(
+          90deg,
+          #ff6b6b,
+          #4ecdc4,
+          #45b7d1,
+          #f093fb,
+          #feca57
+        );
+        background-size: 300% 100%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: labelGlow 6s linear infinite;
       }
 
-      #drop-zone {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-      }
-
-      #drop-zone.hide {
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.1s ease; /* Быстрое скрытие */
-      }
-
-      #drop-area {
-        border: 2px dashed #646cff;
-        border-radius: 12px;
-        padding: 40px;
-        text-align: center;
-        background: rgba(26, 26, 26, 0.9);
-        color: rgba(255, 255, 255, 0.87);
-        transition: all 0.3s ease;
-        min-width: 300px;
-        max-width: 500px;
-      }
-
-      #drop-area:hover {
-        border-color: #535bf2;
-        background: rgba(26, 26, 26, 0.95);
+      @keyframes labelGlow {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
       }
 
       button {
@@ -784,165 +784,930 @@
         top: 0;
         width: 100%;
         height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.6);
+        overflow: hidden;
+        background-color: rgba(0, 0, 0, 0.75);
         align-items: center;
         justify-content: center;
+        backdrop-filter: blur(8px);
       }
 
       .modal-content {
-        background-color: #1e1e1e;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
         margin: auto;
-        padding: 20px;
-        border: 1px solid #444;
-        width: 80%;
-        max-width: 500px;
-        border-radius: 8px;
+        padding: 0;
+        border: 1px solid rgba(100, 108, 255, 0.3);
+        width: 90%;
+        max-width: 460px;
+        max-height: 92vh;
+        border-radius: 16px;
         position: relative;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        box-shadow:
+          0 20px 50px rgba(0, 0, 0, 0.8),
+          0 0 20px rgba(100, 108, 255, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .modal-header {
+        background: linear-gradient(135deg, #646cff 0%, #7c3aed 100%);
+        padding: 8px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+      }
+
+      .modal-header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          45deg,
+          transparent 30%,
+          rgba(255, 255, 255, 0.1) 50%,
+          transparent 70%
+        );
+        animation: shimmer 3s ease-in-out infinite;
+      }
+
+      @keyframes shimmer {
+        0%,
+        100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      #hotspot-editor-title {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 1;
       }
 
       .close-btn {
-        color: #aaa;
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        font-size: 28px;
-        font-weight: bold;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
+        font-size: 16px;
+        font-weight: normal;
+        transition: all 0.2s ease;
+        position: relative;
+        z-index: 1;
       }
 
-      .close-btn:hover,
-      .close-btn:focus {
-        color: white;
-        text-decoration: none;
+      .close-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+      }
+
+      .modal-body {
+        padding: 12px;
+        overflow-y: auto;
+        flex: 1;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(100, 108, 255, 0.3) transparent;
+      }
+
+      .modal-body::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .modal-body::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .modal-body::-webkit-scrollbar-thumb {
+        background: rgba(100, 108, 255, 0.3);
+        border-radius: 3px;
+      }
+
+      .modal-body::-webkit-scrollbar-thumb:hover {
+        background: rgba(100, 108, 255, 0.5);
       }
 
       #hotspot-form .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 6px;
+      }
+
+      #hotspot-form .form-section {
+        margin-bottom: 6px;
+        position: relative;
+      }
+
+      #hotspot-form .section-divider {
+        margin: 8px 0;
+        position: relative;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+      }
+
+      /* Скрываем лишние разделители в конце формы */
+      #hotspot-form .form-section:last-of-type + .section-divider,
+      #hotspot-form .section-divider:last-of-type {
+        display: none;
+      }
+
+      #hotspot-form .form-section::before {
+        display: none;
+      }
+
+      #hotspot-form .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #646cff;
+        margin: 0 0 6px 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      #hotspot-form .section-title::before {
+        content: "";
+        width: 4px;
+        height: 4px;
+        background: linear-gradient(135deg, #646cff, #7c3aed);
+        border-radius: 50%;
+        box-shadow: 0 0 6px rgba(100, 108, 255, 0.4);
       }
 
       #hotspot-form label {
         display: block;
-        margin-bottom: 5px;
-        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 3px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 12px;
+        font-weight: 500;
       }
 
       #hotspot-form input[type="text"],
       #hotspot-form textarea,
       #hotspot-form select,
       #hotspot-form input[type="color"],
-      #hotspot-form input[type="range"] {
+      #hotspot-form input[type="range"],
+      #hotspot-form input[type="number"] {
         width: 100%;
-        padding: 10px;
-        background: #2a2a2a;
-        border: 1px solid #444;
-        border-radius: 4px;
+        padding: 6px 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
         color: rgba(255, 255, 255, 0.9);
+        font-size: 12px;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+      }
+
+      #hotspot-form input[type="text"]:focus,
+      #hotspot-form textarea:focus,
+      #hotspot-form select:focus,
+      #hotspot-form input[type="number"]:focus {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: #646cff;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.2);
       }
 
       #hotspot-form input[type="color"] {
-        height: 40px;
-        padding: 5px;
+        height: 32px;
+        padding: 2px;
+        cursor: pointer;
+        border-radius: 8px;
+      }
+
+      #hotspot-form input[type="color"]::-webkit-color-swatch {
+        border: none;
+        border-radius: 4px;
       }
 
       #hotspot-form input[type="range"] {
         margin-bottom: 5px;
+        background: transparent;
+      }
+
+      #hotspot-form input[type="range"]::-webkit-slider-track {
+        background: rgba(255, 255, 255, 0.1);
+        height: 6px;
+        border-radius: 3px;
+      }
+
+      #hotspot-form input[type="range"]::-webkit-slider-thumb {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #646cff, #7c3aed);
+        cursor: pointer;
+        border: 2px solid white;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      #hotspot-form textarea {
+        resize: vertical;
+        min-height: 50px;
+        font-family: inherit;
+      }
+
+      #hotspot-form select {
+        cursor: pointer;
+        background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23ffffff" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 12px;
+        appearance: none;
+        padding-right: 36px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        align-items: end;
+      }
+
+      .checkbox-group {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+
+      .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+      }
+
+      .checkbox-item input[type="checkbox"] {
+        width: auto;
+        margin: 0;
+        transform: scale(1.1);
+        accent-color: #646cff;
       }
 
       #hotspot-form input[type="file"] {
-        border: 2px dashed #555;
-        padding: 20px;
+        border: 2px dashed rgba(100, 108, 255, 0.3);
+        padding: 16px;
         text-align: center;
         cursor: pointer;
-        border-radius: 8px;
-        transition: border-color 0.3s ease;
-        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        background: rgba(100, 108, 255, 0.05);
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 13px;
       }
 
       #hotspot-form input[type="file"]:hover {
         border-color: #646cff;
+        background: rgba(100, 108, 255, 0.1);
+        color: rgba(255, 255, 255, 0.9);
       }
 
       .custom-icon-preview {
         display: flex;
         align-items: center;
-        padding: 10px;
-        background: rgba(255, 255, 255, 0.1);
+        gap: 12px;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 8px;
+        margin-top: 8px;
       }
 
       .custom-icon-preview img {
-        border: 1px solid #555;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
       }
 
-      #text-size-value {
-        display: inline-block;
-        background: #444;
-        padding: 5px 10px;
-        border-radius: 4px;
-        margin-left: 10px;
-        min-width: 30px;
-        text-align: center;
+      .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+        margin-top: 12px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .form-actions .btn-secondary {
+        background: linear-gradient(135deg, #6c757d, #495057);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .form-actions .btn-secondary:hover {
+        background: linear-gradient(135deg, #5a6268, #343a40);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      .form-actions .btn-primary {
+        background: linear-gradient(135deg, #646cff, #7c3aed);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .form-actions .btn-primary::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.6s ease;
+      }
+
+      .form-actions .btn-primary:hover::before {
+        left: 100%;
+      }
+
+      .form-actions .btn-primary:hover {
+        background: linear-gradient(135deg, #535bf2, #6d28d9);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(100, 108, 255, 0.4);
+      }
+
+      .help-text {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.5);
+        margin-top: 4px;
+        line-height: 1.4;
+      }
+
+      .help-text strong {
+        color: rgba(255, 255, 255, 0.7);
       }
 
       /* Стили для настроек приложения */
-      .settings-section {
-        margin-bottom: 20px;
-        padding: 15px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 8px;
+      .settings-container {
+        padding: 10px 0;
       }
 
-      .settings-section h4 {
-        margin: 0 0 10px 0;
+      .settings-group {
+        margin-bottom: 20px;
+      }
+
+      .settings-group:last-child {
+        margin-bottom: 0;
+      }
+
+      .settings-group h4 {
+        margin: 0 0 15px 0;
         color: #646cff;
+        font-size: 16px;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .settings-group label {
+        display: block;
+        margin-bottom: 12px;
+        color: rgba(255, 255, 255, 0.8);
         font-size: 14px;
       }
 
-      .settings-section label {
-        display: block;
-        margin-bottom: 10px;
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 13px;
-      }
-
-      .settings-section input[type="color"],
-      .settings-section input[type="range"] {
+      .settings-group input[type="color"],
+      .settings-group input[type="range"] {
         margin-right: 10px;
       }
 
-      #hotspot-form button {
-        width: 100%;
-        padding: 12px;
+      .settings-divider {
+        margin: 20px 0;
+        position: relative;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
       }
 
+      /* Мобильная адаптация */
       @media (max-width: 768px) {
         #sidebar {
-          width: 280px;
+          width: 100vw;
+          transform: translateX(-100%);
+          transition: transform 0.3s ease;
         }
 
-        .scene-item {
+        #sidebar.show {
+          transform: translateX(0);
+        }
+
+        #sidebar-toggle {
+          left: 10px;
+          top: 10px;
+          z-index: 1002;
+          background: rgba(26, 26, 26, 0.95);
+          border: 2px solid #646cff;
+          border-radius: 8px;
+          padding: 8px 12px;
+          font-size: 16px;
+        }
+
+        .modal-content {
+          width: 95vw;
+          max-width: none;
+          max-height: 95vh;
+          margin: 2.5vh auto;
+        }
+
+        .modal-header {
           padding: 10px 12px;
         }
 
-        .scene-name {
-          font-size: 13px;
+        #hotspot-editor-title {
+          font-size: 16px;
         }
 
-        #futuristic-progress {
-          min-width: 280px;
-          padding: 16px 24px;
+        .modal-body {
+          padding: 8px;
         }
+
+        .form-row {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+
+        .form-actions {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .form-actions .btn-primary,
+        .form-actions .btn-secondary {
+          width: 100%;
+          padding: 12px;
+          font-size: 14px;
+        }
+
+        .checkbox-group {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+
+        .settings-container {
+          padding: 8px 0;
+        }
+
+        .settings-group label {
+          font-size: 16px;
+          margin-bottom: 16px;
+        }
+
+        input[type="range"] {
+          height: 40px;
+        }
+
+        input[type="color"] {
+          height: 44px !important;
+          width: 100px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          font-size: 14px;
+        }
+
+        .panel {
+          padding: 12px;
+        }
+
+        .panel h2 {
+          font-size: 14px;
+        }
+
+        .panel button {
+          padding: 12px;
+          font-size: 16px;
+          touch-action: manipulation;
+        }
+
+        #hotspot-editor-title {
+          font-size: 14px;
+        }
+
+        .modal-body {
+          padding: 6px;
+        }
+
+        #hotspot-form input,
+        #hotspot-form textarea,
+        #hotspot-form select {
+          padding: 10px 8px;
+          font-size: 16px;
+          min-height: 44px;
+        }
+
+        #hotspot-form textarea {
+          min-height: 60px;
+        }
+
+        .settings-group h4 {
+          font-size: 18px;
+        }
+      }
+
+      /* Touch-friendly improvements */
+      @media (hover: none) and (pointer: coarse) {
+        button,
+        .btn-primary,
+        .btn-secondary {
+          min-height: 44px;
+          font-size: 16px;
+        }
+
+        input,
+        select,
+        textarea {
+          min-height: 44px;
+          font-size: 16px;
+        }
+
+        .close-btn {
+          width: 44px;
+          height: 44px;
+          font-size: 20px;
+        }
+      }
+      /* Стили для окна загрузки панорам */
+      #drop-zone {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.75);
+        display: none !important;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        backdrop-filter: blur(8px);
+        animation: modalFadeIn 0.3s ease-out;
+      }
+
+      #drop-zone.show {
+        display: flex !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 99999 !important;
+        background: rgba(0, 0, 0, 0.75) !important;
+        backdrop-filter: blur(8px) !important;
+      }
+
+      #drop-zone.hide {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.1s ease;
+      }
+
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          backdrop-filter: blur(0px);
+        }
+        to {
+          opacity: 1;
+          backdrop-filter: blur(8px);
+        }
+      }
+
+      #drop-area {
+        background: linear-gradient(
+          135deg,
+          rgba(45, 45, 45, 0.95) 0%,
+          rgba(35, 35, 35, 0.95) 100%
+        );
+        border: 2px solid rgba(100, 108, 255, 0.3);
+        border-radius: 20px;
+        padding: 48px 40px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.87);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        min-width: 420px;
+        max-width: 520px;
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+          0 20px 50px rgba(0, 0, 0, 0.8),
+          0 0 30px rgba(100, 108, 255, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+      }
+
+      #drop-area::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(
+          45deg,
+          #646cff,
+          #7c3aed,
+          #ec4899,
+          #f59e0b,
+          #10b981
+        );
+        background-size: 400% 400%;
+        border-radius: 20px;
+        opacity: 0;
+        z-index: -1;
+        animation: gradientShift 6s ease infinite;
+        transition: opacity 0.3s ease;
+      }
+
+      #drop-area:hover::before {
+        opacity: 0.7;
+      }
+
+      @keyframes gradientShift {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      #drop-area:hover {
+        border-color: #7c3aed;
+        background: linear-gradient(135deg, #1f1f1f 0%, #333333 100%);
+        transform: translateY(-4px) scale(1.02);
+        box-shadow:
+          0 25px 60px rgba(0, 0, 0, 0.9),
+          0 0 40px rgba(124, 58, 237, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      }
+
+      #drop-area.drag-over {
+        border-color: #10b981;
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.1) 0%,
+          rgba(16, 185, 129, 0.05) 100%
+        );
+        transform: translateY(-6px) scale(1.05);
+        box-shadow:
+          0 30px 70px rgba(0, 0, 0, 0.9),
+          0 0 50px rgba(16, 185, 129, 0.6),
+          inset 0 2px 0 rgba(255, 255, 255, 0.2);
+      }
+
+      .upload-icon {
+        margin-bottom: 20px;
+        opacity: 0.7;
+        transition: all 0.3s ease;
+      }
+
+      .upload-icon svg {
+        width: 64px;
+        height: 64px;
+        stroke: #646cff;
+        filter: drop-shadow(0 4px 8px rgba(100, 108, 255, 0.3));
+      }
+
+      #drop-area:hover .upload-icon {
+        opacity: 1;
+        transform: translateY(-2px) scale(1.1);
+      }
+
+      #drop-area:hover .upload-icon svg {
+        stroke: #7c3aed;
+        filter: drop-shadow(0 6px 12px rgba(124, 58, 237, 0.4));
+      }
+
+      #drop-area h3 {
+        margin: 0 0 12px 0;
+        font-size: 24px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .upload-description {
+        margin: 0 0 24px 0;
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.5;
+      }
+
+      .upload-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      .upload-divider {
+        text-align: center;
+        margin: 8px 0;
+        position: relative;
+      }
+
+      .upload-divider::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        z-index: 1;
+      }
+
+      .upload-divider span {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        padding: 4px 16px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.6);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        z-index: 2;
+        display: inline-block;
+      }
+
+      .upload-info {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .info-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .info-icon {
+        font-size: 16px;
+        opacity: 0.8;
+      }
+
+      .btn-primary {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 16px 24px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, #646cff 0%, #7c3aed 100%);
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+          0 4px 12px rgba(100, 108, 255, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      }
+
+      .btn-primary::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .btn-primary:hover::before {
+        left: 100%;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(135deg, #535bf2 0%, #6d28d9 100%);
+        transform: translateY(-2px);
+        box-shadow:
+          0 8px 25px rgba(100, 108, 255, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      }
+
+      .btn-primary svg {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2;
+      }
+
+      .upload-btn {
+        /* Наследует стили от .btn-primary */
+      }
+
+      .btn-secondary {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 14px 20px;
+        font-size: 15px;
+        font-weight: 500;
+        border-radius: 10px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        background: rgba(128, 128, 128, 0.3);
+        color: rgba(255, 255, 255, 0.9);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .btn-secondary:hover {
+        border-color: rgba(128, 128, 128, 0.5);
+        background: rgba(128, 128, 128, 0.4);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(128, 128, 128, 0.3);
+      }
+
+      .btn-secondary svg {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2;
       }
     </style>
   </head>
   <body>
     <div class="app-container">
+      <!-- Кнопка переключения панели (независимая) -->
+      <button id="sidebar-toggle" type="button">⮜</button>
+
       <!-- Боковая панель -->
       <aside id="sidebar">
-        <button id="sidebar-toggle" type="button">⮜</button>
-
         <!-- Список сцен наверху -->
         <div class="sidebar-content">
           <!-- Кнопка добавления панорамы вверху -->
@@ -1225,15 +1990,135 @@
     <!-- Модальное окно загрузки -->
     <div id="drop-zone">
       <div id="drop-area">
-        <h3>Добавьте панорамы</h3>
-        <p>Перетащите файлы сюда или нажмите кнопку ниже</p>
-        <button id="load-project-btn" type="button">Загрузить проект</button>
-        <button
-          type="button"
-          onclick="document.getElementById('file-input').click()"
-        >
-          Выбрать файлы
-        </button>
+        <div class="upload-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <polyline
+              points="17,8 12,3 7,8"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <line
+              x1="12"
+              y1="3"
+              x2="12"
+              y2="15"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        <h3>Добавить панорамы</h3>
+        <p class="upload-description">
+          Перетащите файлы изображений сюда или выберите файлы
+        </p>
+        <div class="upload-buttons">
+          <button
+            type="button"
+            class="btn-primary upload-btn"
+            onclick="document.getElementById('file-input').click()"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <polyline
+                points="14,2 14,8 20,8"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <line
+                x1="16"
+                y1="13"
+                x2="8"
+                y2="13"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <line
+                x1="16"
+                y1="17"
+                x2="8"
+                y2="17"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <polyline
+                points="10,9 9,9 8,9"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Выбрать панорамы
+          </button>
+          <div class="upload-divider"></div>
+          <button id="load-project-btn" type="button" class="btn-secondary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <polyline
+                points="14,2 14,8 20,8"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <line
+                x1="16"
+                y1="13"
+                x2="8"
+                y2="13"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <line
+                x1="16"
+                y1="17"
+                x2="8"
+                y2="17"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            Загрузить проект
+          </button>
+        </div>
+        <div class="upload-info">
+          <div class="info-item">
+            <span class="info-icon">📸</span>
+            <span>Поддерживаемые форматы: JPG, PNG, WEBP</span>
+          </div>
+          <div class="info-item">
+            <span class="info-icon">📁</span>
+            <span>Можно загружать несколько файлов одновременно</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1249,330 +2134,382 @@
 
     <!-- Прогресс-бар -->
     <div id="futuristic-progress">
-      <div class="infinity-loader">
-        <div class="infinity-symbol"></div>
+      <div class="color-logo">
+        <span class="logo-letter letter-c" data-letter="C">C</span>
+        <span class="logo-letter letter-o" data-letter="o">o</span>
+        <span class="logo-letter letter-l" data-letter="l">l</span>
+        <span class="logo-letter letter-o2" data-letter="o">o</span>
+        <span class="logo-letter letter-r" data-letter="R">R</span>
       </div>
-      <span class="label">Загрузка панорам...</span>
+      <span class="label" data-text="Загрузка панорам..."
+        >Загрузка панорам...</span
+      >
     </div>
 
     <!-- Модальное окно редактора хотспотов -->
     <div id="hotspot-editor-modal" class="modal">
       <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <form id="hotspot-form">
+        <div class="modal-header">
           <h3 id="hotspot-editor-title">Настроить точку</h3>
-          <div class="form-group form-group-title">
-            <label for="hotspot-title">Название</label>
-            <input type="text" id="hotspot-title" name="title" required />
-          </div>
-          <div class="form-group form-group-description">
-            <label for="hotspot-description">Описание</label>
-            <textarea
-              id="hotspot-description"
-              name="description"
-              rows="4"
-            ></textarea>
-          </div>
-          <div class="form-group form-group-target-scene">
-            <label for="hotspot-target-scene">Сцена для перехода</label>
-            <select id="hotspot-target-scene" name="targetSceneId"></select>
-          </div>
-          <div class="form-group form-group-text-style">
-            <label for="hotspot-text-color">Цвет текста</label>
-            <input
-              type="color"
-              id="hotspot-text-color"
-              name="textColor"
-              value="#ffffff"
-            />
-          </div>
-          <div class="form-group form-group-text-style">
-            <label for="hotspot-text-size">Размер текста</label>
-            <select id="hotspot-text-size" name="textSize">
-              <option value="0.75">Мелкий</option>
-              <option value="1" selected>Обычный</option>
-              <option value="1.25">Средний</option>
-              <option value="1.5">Крупный</option>
-              <option value="2">Очень крупный</option>
-            </select>
-          </div>
-          <div class="form-group form-group-text-style">
-            <label for="hotspot-text-family">Шрифт</label>
-            <select id="hotspot-text-family" name="textFamily">
-              <option value="Arial, sans-serif">Arial</option>
-              <option value="Roboto, Arial, sans-serif">Roboto</option>
-              <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">
-                Segoe UI
-              </option>
-              <option value="'Times New Roman', Times, serif">
-                Times New Roman
-              </option>
-              <option value="'Courier New', Courier, monospace">
-                Courier New
-              </option>
-            </select>
-          </div>
-          <div
-            class="form-group form-group-text-style"
-            style="display: flex; gap: 12px; align-items: center"
-          >
-            <label style="min-width: 140px">Стиль</label>
-            <label
-              ><input type="checkbox" id="hotspot-text-bold" name="textBold" />
-              Жирный</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                id="hotspot-text-underline"
-                name="textUnderline"
-              />
-              Подчёркнутый</label
-            >
-          </div>
-          <div class="form-group form-group-marker-style">
-            <label for="hotspot-marker-color">Цвет маркера</label>
-            <input type="color" id="hotspot-marker-color" name="markerColor" />
-          </div>
-          <div class="form-group form-group-marker-style">
-            <label for="hotspot-marker-size">Размер маркера</label>
-            <select id="hotspot-marker-size" name="markerSize">
-              <option value="0.2">Маленький</option>
-              <option value="0.3" selected>Обычный</option>
-              <option value="0.4">Крупный</option>
-              <option value="0.5">Очень крупный</option>
-              <option value="0.7">Гигант</option>
-            </select>
-          </div>
-          <div class="form-group form-group-marker-style">
-            <label for="hotspot-marker-icon">Иконка маркера</label>
-            <select id="hotspot-marker-icon" name="markerIcon">
-              <option value="arrow">🔺 Стрелка</option>
-              <option value="sphere">🔵 Сфера</option>
-              <option value="cube">🔲 Куб</option>
-              <option value="cylinder">🟡 Цилиндр</option>
-              <option value="octahedron">💎 Октаэдр</option>
-              <option value="custom">🖼️ Собственная иконка</option>
-            </select>
-          </div>
-          <div
-            class="form-group form-group-custom-icon"
-            id="custom-icon-group"
-            style="display: none"
-          >
-            <label for="hotspot-custom-icon">Загрузить иконку</label>
-            <input
-              type="file"
-              id="hotspot-custom-icon"
-              name="customIcon"
-              accept="image/*"
-            />
+          <button class="close-btn" type="button">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <form id="hotspot-form">
+            <!-- Основные настройки -->
+            <div class="form-section">
+              <div class="form-group form-group-title">
+                <label for="hotspot-title">Название</label>
+                <input
+                  type="text"
+                  id="hotspot-title"
+                  name="title"
+                  required
+                  placeholder="Введите название..."
+                />
+              </div>
+
+              <div class="form-group form-group-description">
+                <label for="hotspot-description">Описание</label>
+                <textarea
+                  id="hotspot-description"
+                  name="description"
+                  rows="3"
+                  placeholder="Опишите точку..."
+                ></textarea>
+              </div>
+
+              <div class="form-group form-group-target-scene">
+                <label for="hotspot-target-scene">Сцена для перехода</label>
+                <select id="hotspot-target-scene" name="targetSceneId">
+                  <option value="">Выберите сцену...</option>
+                </select>
+              </div>
+            </div>
+            <!-- Оформление текста -->
+            <div class="form-section form-group-text-style">
+              <div class="section-title">🎨 Оформление текста</div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="hotspot-text-color">Цвет текста</label>
+                  <input
+                    type="color"
+                    id="hotspot-text-color"
+                    name="textColor"
+                    value="#ffffff"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="hotspot-text-size">Размер текста</label>
+                  <select id="hotspot-text-size" name="textSize">
+                    <option value="0.75">Мелкий</option>
+                    <option value="1" selected>Обычный</option>
+                    <option value="1.25">Средний</option>
+                    <option value="1.5">Крупный</option>
+                    <option value="2">Очень крупный</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="hotspot-text-family">Шрифт</label>
+                <select id="hotspot-text-family" name="textFamily">
+                  <option value="Arial, sans-serif">Arial</option>
+                  <option value="Roboto, Arial, sans-serif">Roboto</option>
+                  <option
+                    value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                  >
+                    Segoe UI
+                  </option>
+                  <option value="'Times New Roman', Times, serif">
+                    Times New Roman
+                  </option>
+                  <option value="'Courier New', Courier, monospace">
+                    Courier New
+                  </option>
+                </select>
+              </div>
+
+              <div class="checkbox-group">
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="hotspot-text-bold"
+                    name="textBold"
+                  />
+                  <label for="hotspot-text-bold">💪 Жирный</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="hotspot-text-underline"
+                    name="textUnderline"
+                  />
+                  <label for="hotspot-text-underline">📝 Подчёркнутый</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="form-section form-group-marker-style">
+              <div class="section-title">📋 Настройки маркера</div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="hotspot-marker-color">Цвет маркера</label>
+                  <input
+                    type="color"
+                    id="hotspot-marker-color"
+                    name="markerColor"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="hotspot-marker-size">Размер маркера</label>
+                  <select id="hotspot-marker-size" name="markerSize">
+                    <option value="0.2">Маленький</option>
+                    <option value="0.3" selected>Обычный</option>
+                    <option value="0.4">Крупный</option>
+                    <option value="0.5">Очень крупный</option>
+                    <option value="0.7">Гигант</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="hotspot-marker-icon">Иконка маркера</label>
+                <select id="hotspot-marker-icon" name="markerIcon">
+                  <option value="arrow">🔺 Стрелка</option>
+                  <option value="sphere">🔵 Круг</option>
+                  <option value="custom">🖼️ Собственная иконка</option>
+                </select>
+              </div>
+
+              <div
+                class="form-group form-group-custom-icon"
+                id="custom-icon-group"
+                style="display: none"
+              >
+                <label for="hotspot-custom-icon">Загрузить иконку</label>
+                <input
+                  type="file"
+                  id="hotspot-custom-icon"
+                  name="customIcon"
+                  accept="image/*"
+                />
+                <div
+                  class="custom-icon-preview"
+                  id="custom-icon-preview"
+                  style="margin-top: 10px; display: none"
+                >
+                  <img
+                    id="custom-icon-img"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
+                    alt="Предпросмотр иконки"
+                    style="
+                      max-width: 60px;
+                      max-height: 60px;
+                      border-radius: 4px;
+                    "
+                  />
+                  <button
+                    type="button"
+                    id="remove-custom-icon"
+                    style="
+                      padding: 6px 12px;
+                      background: #dc3545;
+                      color: white;
+                      border: none;
+                      border-radius: 6px;
+                      cursor: pointer;
+                      font-size: 12px;
+                    "
+                  >
+                    Удалить
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- Дополнительные настройки -->
+            <div class="form-section form-group-iframe" style="display: none">
+              <div class="section-title">🖥️ 3D-iframe</div>
+              <div class="form-group">
+                <label for="hotspot-iframe-url"
+                  >Ссылка (YouTube/другой embed)</label
+                >
+                <input
+                  type="text"
+                  id="hotspot-iframe-url"
+                  name="iframeUrl"
+                  placeholder="Вставьте ссылку на видео (YouTube и т.п.)"
+                />
+                <div class="help-text">
+                  Этот тип добавляет поверх сцены iframe, синхронизируемый с
+                  3D‑плоскостью.<br />
+                  Рекомендуется указывать ссылки формата YouTube — обычные
+                  ссылки будут преобразованы в embed автоматически.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section form-group-video" style="display: none">
+              <div class="section-title">📹 Видео-область</div>
+              <div class="form-group">
+                <label for="hotspot-video-source">Источник видео</label>
+                <select id="hotspot-video-source" name="videoSource">
+                  <option value="">Выберите источник</option>
+                  <option value="file">📁 Локальный файл</option>
+                  <option value="url">🌐 Онлайн-видео</option>
+                </select>
+              </div>
+              <div
+                class="form-group"
+                id="video-file-group"
+                style="display: none"
+              >
+                <label for="hotspot-video-file">Выберите видеофайл</label>
+                <input
+                  type="file"
+                  id="hotspot-video-file"
+                  name="videoFile"
+                  accept="video/*"
+                />
+                <div class="help-text">
+                  Поддерживаемые форматы: MP4, WebM, OGG, Data URL
+                </div>
+              </div>
+              <div
+                class="form-group"
+                id="video-url-group"
+                style="display: none"
+              >
+                <label for="hotspot-video-url">Ссылка на видео</label>
+                <input
+                  type="text"
+                  id="hotspot-video-url"
+                  name="videoUrl"
+                  placeholder="Введите ссылку на видео"
+                />
+                <div class="help-text">
+                  <strong>✅ Поддерживается:</strong> Прямые ссылки на MP4,
+                  WebM, OGG файлы + Data URL (base64)<br />
+                  <strong>❌ НЕ поддерживается:</strong> YouTube, Instagram,
+                  TikTok, VK Video<br />
+                  <strong>Пример:</strong>
+                  https://storage.googleapis.com/video.mp4
+                </div>
+              </div>
+            </div>
+
             <div
-              class="custom-icon-preview"
-              id="custom-icon-preview"
-              style="margin-top: 10px; display: none"
+              class="form-section form-group-video-size"
+              style="display: none"
             >
-              <img
-                id="custom-icon-img"
-                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
-                alt="Предпросмотр иконки"
-                style="max-width: 100px; max-height: 100px; border-radius: 4px"
-              />
+              <div class="section-title">📏 Размеры области</div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="hotspot-video-width">Ширина (м)</label>
+                  <input
+                    type="number"
+                    id="hotspot-video-width"
+                    name="videoWidth"
+                    min="1"
+                    max="20"
+                    step="0.5"
+                    value="4"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="hotspot-video-height">Высота (м)</label>
+                  <input
+                    type="number"
+                    id="hotspot-video-height"
+                    name="videoHeight"
+                    min="1"
+                    max="20"
+                    step="0.5"
+                    value="3"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section form-group-chroma" style="display: none">
+              <div class="section-title">🌈 Хромакей</div>
+              <div class="checkbox-group">
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="hotspot-chroma-enabled"
+                    name="chromaEnabled"
+                  />
+                  <label for="hotspot-chroma-enabled">Включить хромакей</label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="hotspot-chroma-color">Ключевой цвет</label>
+                <input
+                  type="color"
+                  id="hotspot-chroma-color"
+                  name="chromaColor"
+                  value="#00ff00"
+                />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="hotspot-chroma-similarity">Порог похожести</label>
+                  <input
+                    type="number"
+                    id="hotspot-chroma-similarity"
+                    name="chromaSimilarity"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0.4"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="hotspot-chroma-smoothness">Плавность</label>
+                  <input
+                    type="number"
+                    id="hotspot-chroma-smoothness"
+                    name="chromaSmoothness"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0.1"
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="hotspot-chroma-threshold">Порог отсечения</label>
+                <input
+                  type="number"
+                  id="hotspot-chroma-threshold"
+                  name="chromaThreshold"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value="0.0"
+                />
+              </div>
+            </div>
+
+            <div class="form-actions">
               <button
                 type="button"
-                id="remove-custom-icon"
-                style="
-                  margin-left: 10px;
-                  padding: 4px 8px;
-                  background: #dc3545;
-                  color: white;
-                  border: none;
-                  border-radius: 4px;
-                  cursor: pointer;
-                "
+                id="set-as-default-btn"
+                class="btn-secondary"
               >
-                Удалить
+                ⭐ Установить по умолчанию
               </button>
+              <button type="submit" class="btn-primary">Сохранить</button>
             </div>
-          </div>
-
-          <!-- Поля для видео-области -->
-          <!-- Поле для 3D-iframe -->
-          <div class="form-group form-group-iframe" style="display: none">
-            <label for="hotspot-iframe-url"
-              >Ссылка (YouTube/другой embed)</label
-            >
-            <input
-              type="text"
-              id="hotspot-iframe-url"
-              name="iframeUrl"
-              placeholder="Вставьте ссылку на видео (YouTube и т.п.)"
-            />
-            <small
-              style="
-                color: rgba(255, 255, 255, 0.6);
-                font-size: 12px;
-                margin-top: 4px;
-                display: block;
-                line-height: 1.4;
-              "
-            >
-              Этот тип добавляет поверх сцены iframe, синхронизируемый с
-              3D‑плоскостью.<br />
-              Рекомендуется указывать ссылки формата YouTube — обычные ссылки
-              будут преобразованы в embed автоматически.
-            </small>
-          </div>
-
-          <!-- Поля для видео-области -->
-          <div class="form-group form-group-video" style="display: none">
-            <label for="hotspot-video-source">Источник видео</label>
-            <select id="hotspot-video-source" name="videoSource">
-              <option value="">Выберите источник</option>
-              <option value="file">📁 Локальный файл</option>
-              <option value="url">🌐 Онлайн-видео</option>
-            </select>
-          </div>
-          <div
-            class="form-group form-group-video"
-            id="video-file-group"
-            style="display: none"
-          >
-            <label for="hotspot-video-file">Выберите видеофайл</label>
-            <input
-              type="file"
-              id="hotspot-video-file"
-              name="videoFile"
-              accept="video/*"
-            />
-            <small
-              style="
-                color: rgba(255, 255, 255, 0.6);
-                font-size: 12px;
-                margin-top: 4px;
-                display: block;
-              "
-            >
-              Поддерживаемые форматы: MP4, WebM, OGG, Data URL
-            </small>
-          </div>
-          <div
-            class="form-group form-group-video"
-            id="video-url-group"
-            style="display: none"
-          >
-            <label for="hotspot-video-url">Ссылка на видео</label>
-            <input
-              type="text"
-              id="hotspot-video-url"
-              name="videoUrl"
-              placeholder="Введите ссылку на видео"
-            />
-            <small
-              style="
-                color: rgba(255, 255, 255, 0.6);
-                font-size: 12px;
-                margin-top: 4px;
-                display: block;
-                line-height: 1.4;
-              "
-            >
-              ✅ <strong>Поддерживается:</strong> Прямые ссылки на MP4, WebM,
-              OGG файлы + Data URL (base64)<br />
-              ❌ <strong>НЕ поддерживается:</strong> YouTube, Instagram, TikTok,
-              VK Video<br />
-              <strong>Пример:</strong> https://storage.googleapis.com/video.mp4
-            </small>
-          </div>
-          <div class="form-group form-group-video-size" style="display: none">
-            <label for="hotspot-video-width">Ширина видео-области (м)</label>
-            <input
-              type="number"
-              id="hotspot-video-width"
-              name="videoWidth"
-              min="1"
-              max="20"
-              step="0.5"
-              value="4"
-            />
-          </div>
-          <div class="form-group form-group-video-size" style="display: none">
-            <label for="hotspot-video-height">Высота видео-области (м)</label>
-            <input
-              type="number"
-              id="hotspot-video-height"
-              name="videoHeight"
-              min="1"
-              max="20"
-              step="0.5"
-              value="3"
-            />
-          </div>
-
-          <!-- Поля хромакея для анимированного объекта -->
-          <div class="form-group form-group-chroma" style="display: none">
-            <label
-              ><input
-                type="checkbox"
-                id="hotspot-chroma-enabled"
-                name="chromaEnabled"
-              />
-              Включить хромакей</label
-            >
-          </div>
-          <div class="form-group form-group-chroma" style="display: none">
-            <label for="hotspot-chroma-color">Ключевой цвет</label>
-            <input
-              type="color"
-              id="hotspot-chroma-color"
-              name="chromaColor"
-              value="#00ff00"
-            />
-          </div>
-          <div class="form-group form-group-chroma" style="display: none">
-            <label for="hotspot-chroma-similarity">Порог похожести (0–1)</label>
-            <input
-              type="number"
-              id="hotspot-chroma-similarity"
-              name="chromaSimilarity"
-              min="0"
-              max="1"
-              step="0.01"
-              value="0.4"
-            />
-          </div>
-          <div class="form-group form-group-chroma" style="display: none">
-            <label for="hotspot-chroma-smoothness">Плавность (0–1)</label>
-            <input
-              type="number"
-              id="hotspot-chroma-smoothness"
-              name="chromaSmoothness"
-              min="0"
-              max="1"
-              step="0.01"
-              value="0.1"
-            />
-          </div>
-          <div class="form-group form-group-chroma" style="display: none">
-            <label for="hotspot-chroma-threshold">Порог отсечения (0–1)</label>
-            <input
-              type="number"
-              id="hotspot-chroma-threshold"
-              name="chromaThreshold"
-              min="0"
-              max="1"
-              step="0.01"
-              value="0.0"
-            />
-          </div>
-
-          <div class="form-actions">
-            <button type="button" id="set-as-default-btn" class="btn-secondary">
-              ⭐ Установить по умолчанию
-            </button>
-            <button type="submit" class="btn-primary">Сохранить</button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
 
